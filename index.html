@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hamamoto — Nội thất chế tác Nhật Bản từ 1948</title>
+  <meta name="description" content="Hamamoto: nội thất gỗ, da và vải chế tác thủ công theo tinh thần Nhật Bản. Khám phá bộ sưu tập và đặt lịch xem showroom.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="home">
+  <header id="site-header"></header>
+
+  <main>
+    <!-- 1. Hero (mockup image — replace with brand photo/video) -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__media"><img src="assets/images/hero.png" alt=""></div>
+      <div class="container">
+        <div class="hero__content">
+          <span class="eyebrow">Made in Japan · Since 1948</span>
+          <h1 class="display" id="hero-title">Sự tĩnh lặng<br>của tay nghề</h1>
+          <p>Nội thất chế tác theo tinh thần Nhật Bản, để mỗi ngôi nhà có một nhịp sống chậm và bền.</p>
+          <div class="btn-row">
+            <a class="btn btn--light" href="collections.html">Khám phá bộ sưu tập</a>
+            <a class="btn btn--primary" href="showroom.html#booking">Đặt lịch showroom</a>
+          </div>
+        </div>
+      </div>
+      <span class="hero__scroll" aria-hidden="true">Cuộn xuống</span>
+    </section>
+
+    <!-- 2. Brand story -->
+    <section class="section">
+      <div class="container split">
+        <div class="split__text">
+          <span class="eyebrow">Câu chuyện thương hiệu</span>
+          <h2 class="h2">Ba thế hệ, một cách làm</h2>
+          <p>Từ xưởng mộc nhỏ ở Gifu năm 1948, Hamamoto giữ nguyên một nguyên tắc: chọn gỗ tốt, ghép mộng chuẩn và hoàn thiện bằng tay. Mỗi món đồ được làm để dùng cả đời và truyền lại cho thế hệ sau.</p>
+          <a class="link-arrow" href="about.html">Về Hamamoto
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <div class="split__media split__media--tall"><img src="assets/images/info-video.png" alt="Xưởng chế tác Hamamoto" loading="lazy"></div>
+      </div>
+    </section>
+
+    <!-- 3. Collections strip -->
+    <section class="section section--cream" aria-labelledby="col-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Collections</span>
+            <h2 class="h2" id="col-title">Bộ sưu tập</h2>
+          </div>
+          <div class="strip-nav">
+            <button type="button" data-strip-prev="#collection-strip" aria-label="Trước"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button type="button" data-strip-next="#collection-strip" aria-label="Sau"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+        <div class="strip" id="collection-strip"></div>
+      </div>
+    </section>
+
+    <!-- 4. Living Concepts by area -->
+    <section class="section" aria-labelledby="concept-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Living Concepts</span>
+            <h2 class="h2" id="concept-title">Không gian theo diện tích</h2>
+          </div>
+          <a class="link-arrow" href="living-concepts.html">Tất cả không gian
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <div class="concept-grid" id="concept-grid"></div>
+      </div>
+    </section>
+
+    <!-- 5. CTA -->
+    <section class="cta" aria-labelledby="cta-title">
+      <img src="assets/images/room-hallway.png" alt="" loading="lazy">
+      <div class="container">
+        <span class="eyebrow">Showroom</span>
+        <h2 class="h1" id="cta-title">Chạm vào chất liệu, cảm nhận tay nghề</h2>
+        <p>Ghé showroom để ngồi thử, xem vân gỗ và mẫu da, vải thật cùng chuyên viên tư vấn.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="showroom.html#booking">Đặt lịch xem showroom</a>
+          <a class="btn btn--light" href="contact.html">Nhận tư vấn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var HM = window.HM;
+      document.getElementById("collection-strip").innerHTML = HM.collections.map(function (c) {
+        return '<a class="tile" href="collections.html#' + c.id + '">' +
+          '<img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
+          '<div class="tile__caption"><span class="eyebrow">' + c.material + '</span>' +
+          '<h3 class="h3">' + c.no + '</h3><p>' + c.name + '</p></div></a>';
+      }).join("");
+
+      document.getElementById("concept-grid").innerHTML = HM.concepts.filter(function (c) { return /\d/.test(c.area); }).map(function (c) {
+        return '<a class="tile" href="living-concepts.html#' + c.id + '">' +
+          '<img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
+          '<div class="tile__caption"><p class="area">' + c.area + ' <small>m²</small></p>' +
+          '<p>' + c.title + '</p></div></a>';
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

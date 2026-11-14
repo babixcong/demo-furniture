@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collections — Hamamoto</title>
+  <meta name="description" content="Các bộ sưu tập Hamamoto: No.3000, No.5100, No.6000, No.7000.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="collections">
+  <header id="site-header"></header>
+
+  <main>
+    <section class="page-hero">
+      <img src="assets/images/room-living.png" alt="">
+      <div class="container">
+        <span class="eyebrow">Collections</span>
+        <h1 class="h1">Mỗi con số là một cách sống</h1>
+        <p>Bốn dòng sản phẩm, một tinh thần chế tác. Chọn bộ sưu tập hợp với nhịp sống của bạn.</p>
+      </div>
+    </section>
+
+    <div class="container">
+      <nav class="anchor-nav" id="anchor-nav" aria-label="Các bộ sưu tập"></nav>
+      <div id="collections"></div>
+    </div>
+
+    <section class="cta">
+      <img src="assets/images/room-hallway.png" alt="" loading="lazy">
+      <div class="container">
+        <span class="eyebrow">Showroom</span>
+        <h2 class="h1">Xem trọn bộ sưu tập tại showroom</h2>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="showroom.html#booking">Đặt lịch xem showroom</a>
+          <a class="btn btn--light" href="contact.html">Nhận tư vấn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var HM = window.HM;
+      document.getElementById("anchor-nav").innerHTML = HM.collections.map(function (c) {
+        return '<a href="#' + c.id + '">' + c.no + "</a>";
+      }).join("") + '<a href="shop.html">Tất cả sản phẩm</a>';
+
+      document.getElementById("collections").innerHTML = HM.collections.map(function (c) {
+        var items = HM.products.filter(function (p) { return p.col === c.id; });
+        return '<section class="collection" id="' + c.id + '" aria-labelledby="' + c.id + '-t">' +
+          '<div class="collection__media"><img src="' + HM.IMG + c.img + '" alt="" loading="lazy"></div>' +
+          '<div class="collection__text">' +
+            '<span class="eyebrow">' + c.name + '</span>' +
+            '<h2 class="collection__no" id="' + c.id + '-t">' + c.no + '</h2>' +
+            '<p>' + c.text + '</p>' +
+            '<dl class="collection__meta"><div><dt>Chất liệu</dt><dd>' + c.material + '</dd></div>' +
+              '<div><dt>Từ năm</dt><dd>' + c.since + '</dd></div>' +
+              '<div><dt>Sản phẩm</dt><dd>' + items.length + '</dd></div></dl>' +
+            '<div class="collection__products">' + items.slice(0, 4).map(function (p) {
+              return '<a href="product.html?id=' + p.id + '" title="' + HM.esc(p.name) + '">' + HM.productImg(p) + '</a>';
+            }).join("") + '</div>' +
+            '<div class="btn-row"><a class="btn btn--dark" href="shop.html?collection=' + c.id + '">Xem sản phẩm ' + c.no + '</a></div>' +
+          '</div></section>';
+      }).join("");
+    })();
+  </script>
+</body>
+</html>

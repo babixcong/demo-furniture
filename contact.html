@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Liên hệ &amp; tư vấn — Hamamoto</title>
+  <meta name="description" content="Liên hệ Hamamoto để được tư vấn sản phẩm, thiết kế không gian, bảo hành và giao nhận.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="contact">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container page-head">
+      <ol class="breadcrumb"><li><a href="index.html">Trang chủ</a></li><li>Liên hệ</li></ol>
+      <h1 class="h1">Liên hệ &amp; tư vấn</h1>
+      <p class="lead">Hỏi về sản phẩm, đặt làm theo kích thước hay cần phương án bố trí — chúng tôi phản hồi trong vòng một ngày làm việc.</p>
+    </div>
+
+    <section class="container two-col" style="padding-bottom:var(--section-y)">
+      <dl class="info-list">
+        <div><dt>Showroom</dt><dd data-site="address"></dd></div>
+        <div><dt>Hotline</dt><dd><a data-site="phone" href="#"></a></dd></div>
+        <div><dt>Email</dt><dd><a data-site="email" href="#"></a></dd></div>
+        <div><dt>Giờ làm việc</dt><dd data-site="hours"></dd></div>
+        <div><a class="link-arrow" href="showroom.html#booking">Đặt lịch xem showroom
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a></div>
+      </dl>
+
+      <form class="form-card" data-form data-success="Cảm ơn bạn! Chuyên viên tư vấn sẽ liên hệ trong vòng một ngày làm việc.">
+        <span class="eyebrow">Nhận tư vấn</span>
+        <h2 class="h2">Gửi yêu cầu</h2>
+        <div class="form-grid">
+          <div class="field field--full">
+            <span class="label">Chủ đề</span>
+            <div class="choice-row">
+              <label><input type="radio" name="topic" value="san-pham" checked><span>Sản phẩm</span></label>
+              <label><input type="radio" name="topic" value="thiet-ke"><span>Thiết kế không gian</span></label>
+              <label><input type="radio" name="topic" value="bao-hanh"><span>Bảo hành</span></label>
+              <label><input type="radio" name="topic" value="giao-nhan"><span>Giao nhận</span></label>
+            </div>
+          </div>
+          <div class="field"><label for="c-name">Họ và tên <span class="req">*</span></label><input id="c-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
+          <div class="field"><label for="c-phone">Số điện thoại <span class="req">*</span></label><input id="c-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
+          <div class="field field--full"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email"><p class="field__error"></p></div>
+          <div class="field field--full"><label for="c-msg">Nội dung <span class="req">*</span></label><textarea id="c-msg" name="message" data-prefill-product required minlength="10" placeholder="Bạn cần chúng tôi hỗ trợ điều gì?"></textarea><p class="field__error"></p></div>
+          <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
+        </div>
+        <div class="form-actions"><button class="btn btn--dark" type="submit">Gửi yêu cầu</button></div>
+        <p class="form-status" role="status" style="margin-top:16px"></p>
+      </form>
+    </section>
+
+    <section class="section section--cream" aria-labelledby="policy-t">
+      <div class="container">
+        <div class="section-head"><div><span class="eyebrow">Chính sách</span><h2 class="h2" id="policy-t">Thông tin hữu ích</h2></div></div>
+        <div class="quick-links">
+          <a href="policies.html#bao-hanh"><strong>Bảo hành</strong><span>10 năm khung gỗ, 2 năm bọc</span></a>
+          <a href="policies.html#giao-nhan"><strong>Giao nhận</strong><span>Giao và lắp đặt tận nơi</span></a>
+          <a href="policies.html#quyen-rieng-tu"><strong>Quyền riêng tư</strong><span>Cách chúng tôi dùng dữ liệu</span></a>
+          <a href="policies.html#dieu-khoan"><strong>Điều khoản</strong><span>Điều khoản sử dụng</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sản phẩm — Hamamoto</title>
+  <meta name="description" content="Chi tiết sản phẩm Hamamoto: kích thước, chất liệu, tùy chọn hoàn thiện.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="products">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container" style="padding-top:40px">
+      <ol class="breadcrumb" id="crumbs"><li><a href="index.html">Trang chủ</a></li><li><a href="shop.html">Sản phẩm</a></li></ol>
+    </div>
+
+    <div class="container pdp" id="pdp">
+      <div class="pdp__gallery">
+        <div class="pdp__main" id="pdp-main"></div>
+        <div class="pdp__thumbs" id="pdp-thumbs" role="group" aria-label="Ảnh sản phẩm"></div>
+      </div>
+
+      <div class="pdp__info">
+        <a class="eyebrow" id="pdp-collection" href="collections.html"></a>
+        <h1 class="h1" id="pdp-name"></h1>
+        <p class="pdp__price" id="pdp-price"></p>
+        <p class="pdp__desc" id="pdp-desc"></p>
+
+        <form id="pdp-options" onsubmit="return false">
+          <fieldset class="pdp__options">
+            <legend>Chất liệu <span id="mat-label"></span></legend>
+            <div class="choice-row" id="opt-material"></div>
+          </fieldset>
+          <fieldset class="pdp__options">
+            <legend>Màu hoàn thiện <span id="color-label"></span></legend>
+            <div class="opt-swatches" id="opt-color"></div>
+          </fieldset>
+        </form>
+
+        <div class="pdp__cta">
+          <a class="btn btn--dark btn--block" id="cta-book" href="showroom.html#booking">Đặt lịch xem tại showroom</a>
+          <a class="btn btn--outline btn--block" id="cta-contact" href="contact.html">Liên hệ tư vấn</a>
+        </div>
+
+        <dl class="specs" id="pdp-specs"></dl>
+      </div>
+    </div>
+
+    <section class="section section--cream" aria-labelledby="related-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Cùng bộ sưu tập</span>
+            <h2 class="h2" id="related-title">Có thể bạn quan tâm</h2>
+          </div>
+          <a class="link-arrow" id="related-link" href="collections.html">Xem bộ sưu tập
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <div class="product-grid product-grid--4" id="related"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/product.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>For Professionals — Hợp tác cùng Hamamoto</title>
+  <meta name="description" content="Chương trình hợp tác dành cho kiến trúc sư, nhà thiết kế và nhà thầu: catalogue, bảng giá dự án, mẫu vật liệu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="professionals">
+  <header id="site-header"></header>
+
+  <main>
+    <section class="page-hero">
+      <img src="assets/images/room-kitchen.png" alt="">
+      <div class="container">
+        <span class="eyebrow">For Professionals</span>
+        <h1 class="h1">Đồng hành cùng kiến trúc sư và nhà thầu</h1>
+        <p>Từ căn hộ đến khách sạn, chúng tôi cung cấp nội thất tiêu chuẩn và đặt làm theo bản vẽ.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><div><span class="eyebrow">Quyền lợi đối tác</span><h2 class="h2">Vì sao hợp tác với Hamamoto</h2></div></div>
+        <div class="benefits">
+          <div class="benefit"><span class="split__num">01</span><h3>Giá dự án &amp; chiết khấu riêng</h3><p>Bảng giá dành riêng cho đối tác, áp dụng theo quy mô công trình.</p></div>
+          <div class="benefit"><span class="split__num">02</span><h3>Đặt làm theo bản vẽ</h3><p>Điều chỉnh kích thước, chất liệu và hoàn thiện theo thiết kế của bạn.</p></div>
+          <div class="benefit"><span class="split__num">03</span><h3>Hồ sơ kỹ thuật đầy đủ</h3><p>File 3D, bản vẽ CAD, mẫu vật liệu và hỗ trợ kỹ thuật tại công trình.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tight" aria-labelledby="cat-t">
+      <div class="container">
+        <div class="download">
+          <div class="download__cover"><img src="assets/images/room-bedroom.png" alt="Bìa catalogue Hamamoto 2026"></div>
+          <div>
+            <span class="eyebrow">Catalogue 2026</span>
+            <h2 class="h2" id="cat-t">Catalogue sản phẩm &amp; vật liệu</h2>
+            <p>Toàn bộ bộ sưu tập, thông số kỹ thuật và bảng màu hoàn thiện. PDF, 48 trang.</p>
+          </div>
+          <!-- TODO: point href at the real PDF, e.g. assets/catalogue/hamamoto-catalogue-2026.pdf -->
+          <a class="btn btn--dark" href="#register" data-catalogue>Tải catalogue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--cream" id="register" aria-labelledby="reg-t">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">Đăng ký</span>
+          <h2 class="h1" id="reg-t" style="margin-top:12px">Đăng ký hợp tác</h2>
+          <p class="lead" style="margin-top:20px">Để lại thông tin, đội ngũ dự án sẽ gửi catalogue, bảng giá đối tác và liên hệ trong 2 ngày làm việc.</p>
+        </div>
+        <form class="form-card" data-form data-success="Cảm ơn! Hồ sơ của bạn đã được ghi nhận. Catalogue sẽ được gửi qua email." style="background:var(--white)">
+          <div class="form-grid" style="margin-top:0">
+            <div class="field field--full">
+              <span class="label">Bạn là <span class="req">*</span></span>
+              <div class="choice-row">
+                <label><input type="radio" name="role" value="kien-truc-su" required><span>Kiến trúc sư</span></label>
+                <label><input type="radio" name="role" value="thiet-ke"><span>Nhà thiết kế nội thất</span></label>
+                <label><input type="radio" name="role" value="nha-thau"><span>Nhà thầu</span></label>
+                <label><input type="radio" name="role" value="chu-dau-tu"><span>Chủ đầu tư</span></label>
+              </div>
+            </div>
+            <div class="field"><label for="r-name">Họ và tên <span class="req">*</span></label><input id="r-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
+            <div class="field"><label for="r-company">Công ty / Studio <span class="req">*</span></label><input id="r-company" name="company" autocomplete="organization" required><p class="field__error"></p></div>
+            <div class="field"><label for="r-email">Email <span class="req">*</span></label><input id="r-email" name="email" type="email" autocomplete="email" required><p class="field__error"></p></div>
+            <div class="field"><label for="r-phone">Số điện thoại <span class="req">*</span></label><input id="r-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
+            <div class="field field--full"><label for="r-type">Loại công trình</label>
+              <select id="r-type" name="project_type">
+                <option value="">Chọn loại công trình</option>
+                <option>Căn hộ / nhà ở</option><option>Biệt thự</option><option>Khách sạn / resort</option><option>Văn phòng</option><option>Nhà hàng / café</option>
+              </select></div>
+            <div class="field field--full"><label for="r-msg">Mô tả dự án</label><textarea id="r-msg" name="message" placeholder="Quy mô, tiến độ, hạng mục nội thất cần hỗ trợ…"></textarea></div>
+            <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
+          </div>
+          <div class="form-actions"><button class="btn btn--dark" type="submit">Gửi đăng ký</button></div>
+          <p class="form-status" role="status" style="margin-top:16px"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

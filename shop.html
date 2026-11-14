@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sản phẩm — Hamamoto</title>
+  <meta name="description" content="Toàn bộ sản phẩm Hamamoto: sofa, ghế bành, ghế ăn, bàn, tủ kệ và giường. Lọc theo nhóm hàng, bộ sưu tập, chất liệu và màu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="products">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container page-head">
+      <ol class="breadcrumb"><li><a href="index.html">Trang chủ</a></li><li>Sản phẩm</li></ol>
+      <h1 class="h1">Sản phẩm</h1>
+      <p class="lead">Mỗi món đồ đều có thể tùy chọn chất liệu và màu hoàn thiện. Đặt lịch để xem mẫu thật tại showroom.</p>
+    </div>
+
+    <div class="container">
+      <div class="listing-top">
+        <form class="listing-search" role="search" onsubmit="return false">
+          <label class="visually-hidden" for="q">Tìm sản phẩm</label>
+          <input id="q" type="search" placeholder="Tìm theo tên sản phẩm…" autocomplete="off">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </form>
+        <div class="listing-top__right">
+          <span id="result-count" aria-live="polite"></span>
+          <label class="select">
+            <span class="visually-hidden">Sắp xếp</span>
+            <select id="sort">
+              <option value="featured">Nổi bật</option>
+              <option value="price-asc">Giá: thấp đến cao</option>
+              <option value="price-desc">Giá: cao đến thấp</option>
+              <option value="name">Tên A–Z</option>
+            </select>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="container shop-layout">
+      <button class="btn btn--outline btn--sm filters__toggle" type="button" aria-controls="filters" aria-expanded="false">Bộ lọc</button>
+
+      <form class="filters" id="filters" aria-label="Bộ lọc sản phẩm" onsubmit="return false">
+        <fieldset class="filter-group"><legend>Nhóm hàng</legend><div class="filter-list" data-filter="cat"></div></fieldset>
+        <fieldset class="filter-group"><legend>Bộ sưu tập</legend><div class="filter-list" data-filter="col"></div></fieldset>
+        <fieldset class="filter-group"><legend>Chất liệu</legend><div class="filter-list" data-filter="mat"></div></fieldset>
+        <fieldset class="filter-group"><legend>Màu hoàn thiện</legend><div class="filter-list" data-filter="color"></div></fieldset>
+        <button class="filters__reset" type="reset">Xóa bộ lọc</button>
+      </form>
+
+      <section aria-label="Danh sách sản phẩm" id="listing">
+        <div class="product-grid" id="product-grid"></div>
+        <p class="listing__empty" id="listing-empty" hidden>Không có sản phẩm phù hợp. Hãy thử bỏ bớt bộ lọc.</p>
+        <nav class="pagination" id="pagination" aria-label="Phân trang"></nav>
+      </section>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+</html>

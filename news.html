@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tin tức / Projects — Hamamoto</title>
+  <meta name="description" content="Tin tức, dự án, sự kiện và những không gian thực tế sử dụng nội thất Hamamoto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="news">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container page-head">
+      <ol class="breadcrumb"><li><a href="index.html">Trang chủ</a></li><li>Tin tức / Projects</li></ol>
+      <h1 class="h1">Tin tức &amp; Projects</h1>
+      <p class="lead">Dự án đã hoàn thiện, sự kiện tại showroom và những ngôi nhà thật của khách hàng.</p>
+    </div>
+
+    <section class="container" style="padding-bottom:var(--section-y)" aria-label="Bài viết">
+      <div class="tabs" role="tablist" aria-label="Lọc bài viết" id="news-tabs">
+        <button type="button" role="tab" aria-selected="true" data-type="all">Tất cả</button>
+        <button type="button" role="tab" aria-selected="false" data-type="tin-tuc">Tin tức</button>
+        <button type="button" role="tab" aria-selected="false" data-type="du-an">Dự án</button>
+        <button type="button" role="tab" aria-selected="false" data-type="su-kien">Sự kiện</button>
+        <button type="button" role="tab" aria-selected="false" data-type="khong-gian">Không gian thực tế</button>
+      </div>
+      <div class="news-grid" id="news-grid"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var HM = window.HM, grid = document.getElementById("news-grid");
+      // TODO: link each card to its article page once articles exist
+      grid.innerHTML = HM.news.map(function (n) {
+        return '<a class="news-card" href="#" data-type="' + n.type + '">' +
+          '<div class="news-card__img"><img src="' + HM.IMG + n.img + '" alt="" loading="lazy"></div>' +
+          '<div class="news-card__meta"><span>' + n.typeName + "</span><span>" + n.date + "</span></div>" +
+          "<h3>" + HM.esc(n.title) + "</h3><p>" + HM.esc(n.text) + "</p></a>";
+      }).join("");
+
+      function apply(type) {
+        var first = true;
+        grid.querySelectorAll(".news-card").forEach(function (c) {
+          var show = type === "all" || c.getAttribute("data-type") === type;
+          c.hidden = !show;
+          c.classList.toggle("is-feature", show && first);
+          if (show) first = false;
+        });
+      }
+      document.getElementById("news-tabs").addEventListener("click", function (e) {
+        var b = e.target.closest("button[role=tab]");
+        if (!b) return;
+        this.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-selected", String(x === b)); });
+        apply(b.getAttribute("data-type"));
+      });
+      apply("all");
+    })();
+  </script>
+</body>
+</html>
