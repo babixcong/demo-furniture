@@ -45,12 +45,13 @@
 
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
   <script>
     (function () {
       var HM = window.HM;
       document.getElementById("anchor-nav").innerHTML = HM.collections.map(function (c) {
-        return '<a href="#' + c.id + '">' + c.no + "</a>";
+        return '<a href="#' + c.id + '">' + HM.nt(c.no) + "</a>";
       }).join("") + '<a href="shop.html">Tất cả sản phẩm</a>';
 
       document.getElementById("collections").innerHTML = HM.collections.map(function (c) {
@@ -59,7 +60,7 @@
           '<div class="collection__media"><img src="' + HM.IMG + c.img + '" alt="" loading="lazy"></div>' +
           '<div class="collection__text">' +
             '<span class="eyebrow">' + c.name + '</span>' +
-            '<h2 class="collection__no" id="' + c.id + '-t">' + c.no + '</h2>' +
+            '<h2 class="collection__no" id="' + c.id + '-t">' + HM.nt(c.no) + '</h2>' +
             '<p>' + c.text + '</p>' +
             '<dl class="collection__meta"><div><dt>Chất liệu</dt><dd>' + c.material + '</dd></div>' +
               '<div><dt>Từ năm</dt><dd>' + c.since + '</dd></div>' +
@@ -67,7 +68,7 @@
             '<div class="collection__products">' + items.slice(0, 4).map(function (p) {
               return '<a href="product.html?id=' + p.id + '" title="' + HM.esc(p.name) + '">' + HM.productImg(p) + '</a>';
             }).join("") + '</div>' +
-            '<div class="btn-row"><a class="btn btn--dark" href="shop.html?collection=' + c.id + '">Xem sản phẩm ' + c.no + '</a></div>' +
+            '<div class="btn-row"><a class="btn btn--dark" href="shop.html?collection=' + c.id + '">Xem sản phẩm ' + HM.nt(c.no) + '</a></div>' +
           '</div></section>';
       }).join("");
     })();

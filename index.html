@@ -98,6 +98,7 @@
 
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
   <script>
     (function () {
@@ -106,7 +107,7 @@
         return '<a class="tile" href="collections.html#' + c.id + '">' +
           '<img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
           '<div class="tile__caption"><span class="eyebrow">' + c.material + '</span>' +
-          '<h3 class="h3">' + c.no + '</h3><p>' + c.name + '</p></div></a>';
+          '<h3 class="h3">' + HM.nt(c.no) + '</h3><p>' + c.name + '</p></div></a>';
       }).join("");
 
       document.getElementById("concept-grid").innerHTML = HM.concepts.filter(function (c) { return /\d/.test(c.area); }).map(function (c) {

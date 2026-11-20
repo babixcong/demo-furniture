@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nhóm hàng — Sản phẩm Hamamoto</title>
+  <meta name="description" content="Khám phá các nhóm hàng Hamamoto: sofa, ghế bành, ghế ăn, bàn, tủ kệ và giường.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Hide [data-reveal] items before first paint so they can animate in (main.js reveals them) -->
+  <script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js-reveal");</script>
+</head>
+<body data-page="categories">
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container page-head" data-reveal>
+      <ol class="breadcrumb"><li><a href="index.html">Trang chủ</a></li><li>Sản phẩm</li></ol>
+      <h1 class="h1">Nhóm hàng</h1>
+      <p class="lead">Chọn một nhóm hàng để xem toàn bộ sản phẩm, hoặc <a href="shop.html" style="text-decoration:underline">xem tất cả sản phẩm</a>.</p>
+    </div>
+
+    <!-- One large banner per category; rendered from HM.categories -->
+    <div class="container cat-list" id="cat-list"></div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    (function () {
+      var HM = window.HM;
+      var total = HM.categories.length;
+      document.getElementById("cat-list").innerHTML = HM.categories.map(function (c, i) {
+        var n = HM.products.filter(function (p) { return p.cat === c.id; }).length;
+        var no = String(i + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
+        return '<section class="cat-banner" data-reveal aria-labelledby="cat-' + c.id + '">' +
+          '<div class="cat-banner__img"><img src="' + HM.IMG + c.banner + '" alt="" ' + (i ? 'loading="lazy"' : "") + "></div>" +
+          '<div class="cat-banner__content">' +
+            '<span class="eyebrow">' + no + " · " + n + " sản phẩm</span>" +
+            '<h2 class="display" id="cat-' + c.id + '">' + HM.esc(c.name) + "</h2>" +
+            "<p>" + HM.esc(c.desc) + "</p>" +
+            '<a class="btn btn--light" href="shop.html?category=' + c.id + '">Xem thêm' +
+              '<span class="visually-hidden"> ' + HM.esc(c.name) + "</span></a>" +
+          "</div></section>";
+      }).join("");
+    })();
+  </script>
+  <!-- main.js after the banners exist so the scroll reveal can observe them -->
+  <script src="js/main.js"></script>
+</body>
+</html>

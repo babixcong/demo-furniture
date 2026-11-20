@@ -43,6 +43,7 @@
 
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
   <script>
     (function () {
@@ -62,7 +63,7 @@
           list += '<a class="concept__item" href="product.html?id=' + p.id + '" data-n="' + n + '">' +
             "<b>" + n + "</b>" +
             '<span class="thumb">' + HM.productImg(p, "") + "</span>" +
-            "<span><strong>" + HM.esc(p.name) + "</strong><span>" + HM.find(HM.collections, p.col).no + " · " + HM.vnd(p.price) + "</span></span></a>";
+            "<span><strong>" + HM.esc(p.name) + "</strong><span>" + HM.nt(HM.find(HM.collections, p.col).no) + " · " + HM.vnd(p.price) + "</span></span></a>";
         });
         return '<section class="concept" id="' + c.id + '" aria-labelledby="' + c.id + '-t">' +
           '<div class="concept__head"><div><span class="eyebrow">' + label(c) + '</span><h2 class="h2" id="' + c.id + '-t">' + c.title + "</h2></div><p>" + c.text + "</p></div>" +

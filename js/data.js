@@ -16,16 +16,29 @@ window.HM = (function () {
       email: "anhtu@email.com",
       map: "https://maps.google.com/maps?q=21.0031749,105.8154535&z=17&t=k&output=embed",
       mapLink: "https://www.google.com/maps/search/?api=1&query=21.0031749,105.8154535"
+    },
+    // Language switcher. Phase 1 = machine translation (js/i18n.js); "vi" is the source language.
+    languages: [
+      { code: "vi", label: "VI", name: "Tiếng Việt" },
+      { code: "en", label: "EN", name: "English" },
+      { code: "ja", label: "日本語", name: "日本語" }
+    ],
+    // Floating contact button (bottom-right). TODO: replace with the real page / Zalo number.
+    chat: {
+      messenger: "https://m.me/hamamoto",        // Facebook Page username → m.me/<username>
+      facebook: "https://www.facebook.com/hamamoto",
+      zalo: "https://zalo.me/12345678"           // zalo.me/<số điện thoại Zalo hoặc OA id>
     }
   };
 
+  // banner = large lifestyle image for the category landing page (mockup photos)
   var categories = [
-    { id: "sofa", name: "Sofa & ghế nằm" },
-    { id: "ghe-banh", name: "Ghế bành & thư giãn" },
-    { id: "ghe-an", name: "Ghế ăn & ghế đôn" },
-    { id: "ban", name: "Bàn" },
-    { id: "tu-ke", name: "Tủ & kệ" },
-    { id: "giuong", name: "Giường" }
+    { id: "sofa", name: "Sofa & ghế nằm", banner: "cat-sofas.png", desc: "Đệm êm, dáng thấp, cho những buổi chiều thật chậm." },
+    { id: "ghe-banh", name: "Ghế bành & thư giãn", banner: "cat-armchairs.png", desc: "Một chỗ ngồi riêng để đọc sách, uống trà, nghỉ ngơi." },
+    { id: "ghe-an", name: "Ghế ăn & ghế đôn", banner: "cat-chairs.png", desc: "Ôm lưng vừa vặn cho những bữa cơm dài bên gia đình." },
+    { id: "ban", name: "Bàn", banner: "cat-tables.png", desc: "Mặt gỗ đặc, mộng ghép tay, càng dùng càng đẹp." },
+    { id: "tu-ke", name: "Tủ & kệ", banner: "room-hallway.png", desc: "Cất giữ gọn gàng, để không gian luôn thoáng đãng." },
+    { id: "giuong", name: "Giường", banner: "room-bedroom.png", desc: "Khung gỗ vững chãi cho giấc ngủ yên tĩnh." }
   ];
 
   var materials = [
@@ -126,15 +139,32 @@ window.HM = (function () {
       '<div class="pcard__img">' + productImg(p) + (p.tag ? '<span class="pcard__tag">' + esc(p.tag) + "</span>" : "") + "</div>" +
       '<div class="pcard__body"><div>' +
         '<h3 class="pcard__name">' + esc(p.name) + "</h3>" +
-        '<p class="pcard__meta">' + esc(col.no) + " · " + esc(cat.name) + "</p>" +
+        '<p class="pcard__meta">' + nt(col.no) + " · " + esc(cat.name) + "</p>" +
       '</div><p class="pcard__price">' + vnd(p.price) + "</p></div></a>";
   }
+
+  // Active language (phase 1: read from the googtrans cookie set by js/i18n.js)
+  var lang = (function () {
+    var m = document.cookie.match(/(?:^|;\s*)googtrans=\/[a-z-]+\/([a-zA-Z-]+)/);
+    var c = m ? m[1] : "vi";
+    return site.languages.some(function (l) { return l.code === c; }) ? c : "vi";
+  })();
+
+  // Hand-written label for the active language, protected from machine translation.
+  // Usage: HM.t({ vi: "Thương hiệu", en: "Brand", ja: "ブランド" })
+  function t(dict) {
+    var text = dict[lang] || dict.vi;
+    return lang === "vi" ? esc(text) : '<span class="notranslate" translate="no">' + esc(text) + "</span>";
+  }
+
+  // Wrap brand terms / collection numbers so machine translation leaves them alone
+  function nt(text) { return '<span class="notranslate" translate="no">' + esc(text) + "</span>"; }
 
   function param(name) { return new URLSearchParams(location.search).get(name); }
 
   return {
     IMG: IMG, site: site, categories: categories, materials: materials, colors: colors,
     collections: collections, products: products, concepts: concepts, news: news,
-    vnd: vnd, find: find, esc: esc, productImg: productImg, card: card, param: param
+    vnd: vnd, find: find, esc: esc, nt: nt, t: t, lang: lang, productImg: productImg, card: card, param: param
   };
 })();

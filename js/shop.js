@@ -67,6 +67,18 @@
     history.replaceState(null, "", location.pathname + (s ? "?" + s : ""));
   }
 
+  // Heading + breadcrumb follow the category when exactly one is selected
+  var titleEl = document.getElementById("listing-title");
+  var crumbs = document.getElementById("crumbs");
+  function updateTitle() {
+    var c = state.sel.cat.length === 1 ? HM.find(HM.categories, state.sel.cat[0]) : null;
+    titleEl.textContent = c ? c.name : "Tất cả sản phẩm";
+    document.title = (c ? c.name : "Sản phẩm") + " — Hamamoto";
+    var last = crumbs.querySelector("li[data-cat]");
+    if (last) last.remove();
+    if (c) crumbs.insertAdjacentHTML("beforeend", '<li data-cat>' + HM.esc(c.name) + "</li>");
+  }
+
   function render() {
     var list = HM.products.filter(matches);
     if (state.sort === "price-asc") list.sort(function (a, b) { return a.price - b.price; });
@@ -86,6 +98,7 @@
     }
     pager.innerHTML = html;
     syncUrl();
+    updateTitle();
   }
 
   form.addEventListener("change", function () {

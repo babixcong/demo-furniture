@@ -9,7 +9,7 @@
 
   document.title = p.name + " " + col.no + " — Hamamoto";
   $("crumbs").insertAdjacentHTML("beforeend", "<li>" + HM.esc(p.name) + "</li>");
-  $("pdp-collection").textContent = col.no + " · " + cat.name;
+  $("pdp-collection").innerHTML = HM.nt(col.no) + " · " + HM.esc(cat.name);
   $("pdp-collection").href = "collections.html#" + col.id;
   $("pdp-name").textContent = p.name;
   $("pdp-price").textContent = "Từ " + HM.vnd(p.price);
