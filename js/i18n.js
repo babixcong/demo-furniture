@@ -11,8 +11,6 @@
   var HM = window.HM;
   var LANGS = HM.site.languages;
   var SOURCE = "vi";
-  // Shown under the switcher while a machine translation is active (kept untranslated)
-  var NOTE = { en: "Machine translated", ja: "機械翻訳" };
 
   function readCookieLang() {
     var m = document.cookie.match(/(?:^|;\s*)googtrans=\/[a-z-]+\/([a-zA-Z-]+)/);
@@ -78,13 +76,11 @@
             "<span>" + l.label + "</span><small>" + l.name + "</small></button></li>";
         }).join("") +
       "</ul>" +
-      (NOTE[cur] ? '<p class="lang__note">' + NOTE[cur] + "</p>" : "") +
     "</div>";
 
   var actions = document.querySelector(".header__actions");
   if (actions) {
-    var search = document.getElementById("search-toggle");
-    search.insertAdjacentHTML("beforebegin", html);
+    actions.querySelector(".nav-toggle").insertAdjacentHTML("beforebegin", html);
     var root = actions.querySelector(".lang");
     var btn = root.querySelector(".lang__toggle");
     var menu = root.querySelector(".lang__menu");

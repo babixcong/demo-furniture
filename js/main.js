@@ -49,16 +49,12 @@
     });
   }
 
-  // ---------- Search panel ----------
-  var sBtn = document.getElementById("search-toggle");
-  var sPanel = document.getElementById("search-panel");
-  if (sBtn && sPanel) {
-    sBtn.addEventListener("click", function () {
-      var open = sPanel.hidden;
-      sPanel.hidden = !open;
-      sBtn.setAttribute("aria-expanded", String(open));
-      if (open) sPanel.querySelector("input").focus();
-    });
+  // ---------- Home: transparent header over the hero, solid once scrolled ----------
+  var overlay = document.querySelector(".site-header--overlay");
+  if (overlay) {
+    var onScroll = function () { overlay.classList.toggle("is-solid", window.scrollY > 40); };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
   }
 
   // ---------- Floating contact button ----------
@@ -79,7 +75,6 @@
     if (e.key !== "Escape") return;
     if (fab && !fabMenu.hidden) { setFab(false); fabBtn.focus(); }
     closeAll();
-    if (sPanel && !sPanel.hidden) { sPanel.hidden = true; sBtn.setAttribute("aria-expanded", "false"); sBtn.focus(); }
   });
 
   // ---------- Scroll reveal: [data-reveal] fades/slides in when it enters the viewport ----------
@@ -154,7 +149,7 @@
   if (pid) {
     var p = HM.find(HM.products, pid);
     document.querySelectorAll("[data-prefill-product]").forEach(function (el) {
-      if (p) el.value = "Quan tâm: " + p.name + " (" + HM.find(HM.collections, p.col).no + ")";
+      if (p) el.value = "Quan tâm: " + p.name + " — " + p.code;
     });
   }
 

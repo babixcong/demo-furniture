@@ -2,123 +2,17 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Showroom — Đặt lịch tham quan | Hamamoto</title>
-  <meta name="description" content="Địa chỉ, bản đồ và đặt lịch xem showroom Hamamoto cùng chuyên viên tư vấn.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body data-page="showroom">
-  <header id="site-header"></header>
-
-  <main>
-    <section class="page-hero">
-      <img src="assets/images/room-hallway.png" alt="">
-      <div class="container">
-        <span class="eyebrow">Showroom Hà Nội</span>
-        <h1 class="h1">Một ngôi nhà để bạn bước vào</h1>
-        <p>Hơn 60 sản phẩm trưng bày theo từng không gian sống, cùng thư viện mẫu gỗ, da và vải.</p>
-      </div>
-    </section>
-
-    <!-- Info + map -->
-    <section class="section">
-      <div class="container two-col">
-        <dl class="info-list">
-          <div><dt>Địa chỉ</dt><dd data-site="address"></dd></div>
-          <div><dt>Giờ mở cửa</dt><dd data-site="hours"></dd></div>
-          <div><dt>Điện thoại</dt><dd><a data-site="phone" href="#"></a></dd></div>
-          <div><dt>Email</dt><dd><a data-site="email" href="#"></a></dd></div>
-          <div><a class="link-arrow" id="map-link" href="#" target="_blank" rel="noopener">Chỉ đường trên Google Maps
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
-          </a></div>
-        </dl>
-        <iframe class="map" id="map" title="Bản đồ showroom Hamamoto" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      </div>
-    </section>
-
-    <!-- Photos -->
-    <section class="section section--cream" aria-labelledby="photos-t">
-      <div class="container">
-        <div class="section-head"><div><span class="eyebrow">Hình ảnh</span><h2 class="h2" id="photos-t">Không gian showroom</h2></div></div>
-        <div class="gallery-grid">
-          <img src="assets/images/room-living.png" alt="Khu phòng khách" loading="lazy">
-          <img src="assets/images/room-bedroom.png" alt="Khu phòng ngủ" loading="lazy">
-          <img src="assets/images/room-kitchen.png" alt="Khu bếp – ăn" loading="lazy">
-          <img src="assets/images/cat-tables.png" alt="Thư viện mẫu gỗ" loading="lazy">
-          <img src="assets/images/cat-sofas.png" alt="Khu sofa" loading="lazy">
-        </div>
-      </div>
-    </section>
-
-    <!-- On display -->
-    <section class="section" aria-labelledby="display-t">
-      <div class="container">
-        <div class="section-head">
-          <div><span class="eyebrow">Đang trưng bày</span><h2 class="h2" id="display-t">Sản phẩm tại showroom</h2></div>
-          <a class="link-arrow" href="shop.html">Tất cả sản phẩm
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-        </div>
-        <div class="product-grid product-grid--4" id="on-display"></div>
-      </div>
-    </section>
-
-    <!-- Booking -->
-    <section class="section section--cream" id="booking" aria-labelledby="booking-t">
-      <div class="container two-col">
-        <div>
-          <span class="eyebrow">Đặt lịch</span>
-          <h2 class="h1" id="booking-t" style="margin-top:12px">Đặt lịch xem showroom</h2>
-          <p class="lead" style="margin-top:20px">Chuyên viên sẽ chuẩn bị sẵn mẫu vật liệu và sản phẩm bạn quan tâm. Mỗi buổi kéo dài khoảng 60 phút, hoàn toàn miễn phí.</p>
-        </div>
-        <form class="form-card" data-form data-success="Đã nhận yêu cầu đặt lịch. Chúng tôi sẽ gọi xác nhận trong vòng 24 giờ." style="background:var(--white)">
-          <div class="form-grid" style="margin-top:0">
-            <div class="field"><label for="b-name">Họ và tên <span class="req">*</span></label><input id="b-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
-            <div class="field"><label for="b-phone">Số điện thoại <span class="req">*</span></label><input id="b-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
-            <div class="field field--full"><label for="b-email">Email</label><input id="b-email" name="email" type="email" autocomplete="email"><p class="field__error"></p></div>
-            <div class="field"><label for="b-date">Ngày <span class="req">*</span></label><input id="b-date" name="date" type="date" data-future required><p class="field__error"></p></div>
-            <div class="field"><label for="b-time">Khung giờ <span class="req">*</span></label>
-              <select id="b-time" name="time" required>
-                <option value="">Chọn khung giờ</option>
-                <option>09:00 – 10:00</option><option>10:30 – 11:30</option><option>14:00 – 15:00</option>
-                <option>15:30 – 16:30</option><option>18:00 – 19:00</option><option>19:30 – 20:30</option>
-              </select><p class="field__error"></p></div>
-            <div class="field field--full">
-              <span class="label">Bạn quan tâm</span>
-              <div class="choice-row">
-                <label><input type="checkbox" name="interest" value="phong-khach"><span>Phòng khách</span></label>
-                <label><input type="checkbox" name="interest" value="phong-an"><span>Bếp – ăn</span></label>
-                <label><input type="checkbox" name="interest" value="phong-ngu"><span>Phòng ngủ</span></label>
-                <label><input type="checkbox" name="interest" value="tron-goi"><span>Trọn bộ căn hộ</span></label>
-              </div>
-            </div>
-            <div class="field field--full"><label for="b-note">Ghi chú</label><textarea id="b-note" name="note" data-prefill-product placeholder="Diện tích, phong cách, sản phẩm bạn muốn xem…"></textarea></div>
-            <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
-          </div>
-          <div class="form-actions"><button class="btn btn--dark" type="submit">Gửi yêu cầu đặt lịch</button></div>
-          <p class="form-status" role="status" style="margin-top:16px"></p>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer id="site-footer"></footer>
-
-  <script src="js/data.js"></script>
-  <script src="js/layout.js"></script>
-  <script src="js/i18n.js"></script>
-  <script src="js/main.js"></script>
+  <title>Showroom — Hamamoto</title>
+  <!-- Brief 2: the Showroom page was merged into Liên hệ. This stub keeps old links working. -->
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="contact.html#showroom">
+  <meta http-equiv="refresh" content="0; url=contact.html#showroom">
   <script>
-    (function () {
-      var HM = window.HM, S = HM.site.showroom;
-      document.getElementById("map").src = S.map;
-      document.getElementById("map-link").href = S.mapLink;
-      var ids = ["ghe-egg", "ghe-banh-classic", "ban-tra-tron", "ghe-an-co-dien"];
-      document.getElementById("on-display").innerHTML = ids.map(function (id) { return HM.card(HM.find(HM.products, id)); }).join("");
-    })();
+    // keep ?product=… and #booking from old links
+    location.replace("contact.html" + location.search + (location.hash || "#showroom"));
   </script>
+</head>
+<body>
+  <p>Trang Showroom đã chuyển sang <a href="contact.html#showroom">Liên hệ &amp; Showroom</a>.</p>
 </body>
 </html>

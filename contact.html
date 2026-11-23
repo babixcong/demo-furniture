@@ -3,59 +3,122 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Liên hệ &amp; tư vấn — Hamamoto</title>
-  <meta name="description" content="Liên hệ Hamamoto để được tư vấn sản phẩm, thiết kế không gian, bảo hành và giao nhận.">
+  <title>Liên hệ &amp; Showroom — Đặt lịch tham quan | Hamamoto</title>
+  <meta name="description" content="Địa chỉ showroom, bản đồ, giờ mở cửa và đặt lịch xem showroom hoặc nhận tư vấn từ Hamamoto.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="contact">
   <header id="site-header"></header>
 
+  <!-- Brief 2: the Showroom page is merged here (showroom.html now redirects to #showroom) -->
   <main>
-    <div class="container page-head">
-      <ol class="breadcrumb"><li><a href="index.html">Trang chủ</a></li><li>Liên hệ</li></ol>
-      <h1 class="h1">Liên hệ &amp; tư vấn</h1>
-      <p class="lead">Hỏi về sản phẩm, đặt làm theo kích thước hay cần phương án bố trí — chúng tôi phản hồi trong vòng một ngày làm việc.</p>
-    </div>
-
-    <section class="container two-col" style="padding-bottom:var(--section-y)">
-      <dl class="info-list">
-        <div><dt>Showroom</dt><dd data-site="address"></dd></div>
-        <div><dt>Hotline</dt><dd><a data-site="phone" href="#"></a></dd></div>
-        <div><dt>Email</dt><dd><a data-site="email" href="#"></a></dd></div>
-        <div><dt>Giờ làm việc</dt><dd data-site="hours"></dd></div>
-        <div><a class="link-arrow" href="showroom.html#booking">Đặt lịch xem showroom
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a></div>
-      </dl>
-
-      <form class="form-card" data-form data-success="Cảm ơn bạn! Chuyên viên tư vấn sẽ liên hệ trong vòng một ngày làm việc.">
-        <span class="eyebrow">Nhận tư vấn</span>
-        <h2 class="h2">Gửi yêu cầu</h2>
-        <div class="form-grid">
-          <div class="field field--full">
-            <span class="label">Chủ đề</span>
-            <div class="choice-row">
-              <label><input type="radio" name="topic" value="san-pham" checked><span>Sản phẩm</span></label>
-              <label><input type="radio" name="topic" value="thiet-ke"><span>Thiết kế không gian</span></label>
-              <label><input type="radio" name="topic" value="bao-hanh"><span>Bảo hành</span></label>
-              <label><input type="radio" name="topic" value="giao-nhan"><span>Giao nhận</span></label>
-            </div>
-          </div>
-          <div class="field"><label for="c-name">Họ và tên <span class="req">*</span></label><input id="c-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
-          <div class="field"><label for="c-phone">Số điện thoại <span class="req">*</span></label><input id="c-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
-          <div class="field field--full"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email"><p class="field__error"></p></div>
-          <div class="field field--full"><label for="c-msg">Nội dung <span class="req">*</span></label><textarea id="c-msg" name="message" data-prefill-product required minlength="10" placeholder="Bạn cần chúng tôi hỗ trợ điều gì?"></textarea><p class="field__error"></p></div>
-          <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
-        </div>
-        <div class="form-actions"><button class="btn btn--dark" type="submit">Gửi yêu cầu</button></div>
-        <p class="form-status" role="status" style="margin-top:16px"></p>
-      </form>
+    <section class="page-hero">
+      <img src="assets/images/room-hallway.png" alt="">
+      <div class="container">
+        <span class="eyebrow">Liên hệ &amp; Showroom</span>
+        <h1 class="h1">Một ngôi nhà để bạn bước vào</h1>
+        <p>Hơn 60 sản phẩm trưng bày theo từng không gian sống, cùng thư viện mẫu gỗ, da và vải.</p>
+      </div>
     </section>
 
-    <section class="section section--cream" aria-labelledby="policy-t">
+    <!-- Showroom info + map -->
+    <section class="section" id="showroom" aria-labelledby="showroom-t">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">Showroom Hà Nội</span>
+          <h2 class="h2" id="showroom-t" style="margin:12px 0 40px">Ghé thăm chúng tôi</h2>
+          <dl class="info-list">
+            <div><dt>Địa chỉ</dt><dd data-site="address"></dd></div>
+            <div><dt>Giờ mở cửa</dt><dd data-site="hours"></dd></div>
+            <div><dt>Hotline</dt><dd><a data-site="phone" href="#"></a></dd></div>
+            <div><dt>Email</dt><dd><a data-site="email" href="#"></a></dd></div>
+            <div><a class="link-arrow" id="map-link" href="#" target="_blank" rel="noopener">Chỉ đường trên Google Maps
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg>
+            </a></div>
+          </dl>
+        </div>
+        <iframe class="map" id="map" title="Bản đồ showroom Hamamoto" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+
+    <!-- Showroom photos -->
+    <section class="section section--cream" aria-labelledby="photos-t">
+      <div class="container">
+        <div class="section-head"><div><span class="eyebrow">Hình ảnh</span><h2 class="h2" id="photos-t">Không gian showroom</h2></div></div>
+        <div class="showroom-strip">
+          <img src="assets/images/room-living.png" alt="Khu phòng khách" loading="lazy">
+          <img src="assets/images/room-bedroom.png" alt="Khu phòng ngủ" loading="lazy">
+          <img src="assets/images/room-kitchen.png" alt="Khu bếp – ăn" loading="lazy">
+          <img src="assets/images/cat-tables.png" alt="Thư viện mẫu gỗ" loading="lazy">
+          <img src="assets/images/cat-sofas.png" alt="Khu sofa" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <!-- One form: book a showroom visit OR ask for advice -->
+    <section class="section" id="booking" aria-labelledby="booking-t">
+      <div class="container two-col">
+        <div>
+          <span class="eyebrow">Đặt lịch &amp; tư vấn</span>
+          <h2 class="h1" id="booking-t" style="margin-top:12px">Hẹn gặp tại showroom</h2>
+          <p class="lead" style="margin-top:20px">Chuyên viên sẽ chuẩn bị sẵn mẫu vật liệu và sản phẩm bạn quan tâm. Mỗi buổi khoảng 60 phút, hoàn toàn miễn phí. Hoặc để lại câu hỏi, chúng tôi phản hồi trong một ngày làm việc.</p>
+        </div>
+        <form class="form-card" id="contact-form" data-form data-success="Cảm ơn bạn! Chúng tôi đã nhận yêu cầu và sẽ liên hệ lại trong vòng 24 giờ.">
+          <div class="form-grid" style="margin-top:0">
+            <div class="field field--full" id="tu-van">
+              <span class="label">Bạn cần</span>
+              <div class="choice-row">
+                <label><input type="radio" name="purpose" value="booking" checked><span>Đặt lịch xem showroom</span></label>
+                <label><input type="radio" name="purpose" value="consult"><span>Nhận tư vấn</span></label>
+              </div>
+            </div>
+            <div class="field"><label for="c-name">Họ và tên <span class="req">*</span></label><input id="c-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
+            <div class="field"><label for="c-phone">Số điện thoại <span class="req">*</span></label><input id="c-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
+            <div class="field field--full"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email"><p class="field__error"></p></div>
+
+            <div class="field booking-only"><label for="c-date">Ngày <span class="req">*</span></label><input id="c-date" name="date" type="date" data-future required><p class="field__error"></p></div>
+            <div class="field booking-only"><label for="c-time">Khung giờ <span class="req">*</span></label>
+              <select id="c-time" name="time" required>
+                <option value="">Chọn khung giờ</option>
+                <option>09:00 – 10:00</option><option>10:30 – 11:30</option><option>14:00 – 15:00</option>
+                <option>15:30 – 16:30</option><option>18:00 – 19:00</option><option>19:30 – 20:30</option>
+              </select><p class="field__error"></p></div>
+            <div class="field field--full booking-only">
+              <span class="label">Không gian quan tâm</span>
+              <div class="choice-row">
+                <label><input type="checkbox" name="interest" value="phong-khach"><span>Phòng khách</span></label>
+                <label><input type="checkbox" name="interest" value="phong-an"><span>Bếp – ăn</span></label>
+                <label><input type="checkbox" name="interest" value="phong-ngu"><span>Phòng ngủ</span></label>
+                <label><input type="checkbox" name="interest" value="tron-goi"><span>Trọn bộ căn hộ</span></label>
+              </div>
+            </div>
+
+            <div class="field field--full"><label for="c-msg">Ghi chú / câu hỏi <span class="req consult-only" hidden>*</span></label><textarea id="c-msg" name="message" data-prefill-product placeholder="Diện tích, phong cách, sản phẩm bạn muốn xem…"></textarea><p class="field__error"></p></div>
+            <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
+          </div>
+          <div class="form-actions"><button class="btn btn--dark" type="submit" id="c-submit">Gửi yêu cầu đặt lịch</button></div>
+          <p class="form-status" role="status" style="margin-top:16px"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- On display -->
+    <section class="section section--cream" aria-labelledby="display-t">
+      <div class="container">
+        <div class="section-head">
+          <div><span class="eyebrow">Đang trưng bày</span><h2 class="h2" id="display-t">Sản phẩm tại showroom</h2></div>
+          <a class="link-arrow" href="categories.html">Tất cả sản phẩm
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <div class="product-grid product-grid--4" id="on-display"></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="policy-t">
       <div class="container">
         <div class="section-head"><div><span class="eyebrow">Chính sách</span><h2 class="h2" id="policy-t">Thông tin hữu ích</h2></div></div>
         <div class="quick-links">
@@ -70,9 +133,43 @@
 
   <footer id="site-footer"></footer>
 
+  <script src="js/catalog.js"></script>
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var HM = window.HM, S = HM.site.showroom;
+      document.getElementById("map").src = S.map;
+      document.getElementById("map-link").href = S.mapLink;
+      var ids = ["sl6000-211sh42", "s7000-176sh42", "wl3000-165sh40", "da8200-sh43"];
+      document.getElementById("on-display").innerHTML = ids.map(function (id) { return HM.card(HM.find(HM.products, id)); }).join("");
+
+      // Booking vs consult: booking-only fields are hidden + disabled (so they skip validation)
+      var form = document.getElementById("contact-form");
+      var msg = document.getElementById("c-msg");
+      var submit = document.getElementById("c-submit");
+      function apply() {
+        var booking = form.purpose.value === "booking";
+        form.querySelectorAll(".booking-only").forEach(function (el) {
+          el.hidden = !booking;
+          el.querySelectorAll("input, select").forEach(function (i) { i.disabled = !booking; });
+        });
+        msg.required = !booking;
+        if (!booking) msg.minLength = 10; else msg.removeAttribute("minlength");
+        form.querySelector(".consult-only").hidden = booking;
+        submit.textContent = booking ? "Gửi yêu cầu đặt lịch" : "Gửi câu hỏi";
+        form.setAttribute("data-success", booking
+          ? "Đã nhận yêu cầu đặt lịch. Chúng tôi sẽ gọi xác nhận trong vòng 24 giờ."
+          : "Cảm ơn bạn! Chuyên viên tư vấn sẽ liên hệ trong vòng một ngày làm việc.");
+      }
+      form.addEventListener("change", function (e) { if (e.target.name === "purpose") apply(); });
+      form.addEventListener("reset", function () { setTimeout(apply, 0); });
+      // #tu-van or ?purpose=consult opens the form in "Nhận tư vấn" mode
+      if (location.hash === "#tu-van" || HM.param("purpose") === "consult") form.purpose.value = "consult";
+      apply();
+    })();
+  </script>
 </body>
 </html>
