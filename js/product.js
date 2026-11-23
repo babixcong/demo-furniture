@@ -1,77 +1,49 @@
-/* Product detail: renders product.html?id=<product id> from HM.products. */
+/* Product detail: renders product.html?id=<product id> from the catalogue (js/catalog.js). */
 (function () {
   var HM = window.HM;
   var p = HM.find(HM.products, HM.param("id")) || HM.products[0];
-  var col = HM.find(HM.collections, p.col);
+  var col = p.col ? HM.find(HM.collections, p.col) : null;
   var cat = HM.find(HM.categories, p.cat);
-  var mat = HM.find(HM.materials, p.mat);
   var $ = function (id) { return document.getElementById(id); };
+  var EN = HM.lang === "en";
 
-  document.title = p.name + " " + col.no + " — Hamamoto";
-  $("crumbs").insertAdjacentHTML("beforeend", "<li>" + HM.esc(p.name) + "</li>");
-  $("pdp-collection").textContent = col.no + " · " + cat.name;
-  $("pdp-collection").href = "collections.html#" + col.id;
-  $("pdp-name").textContent = p.name;
-  $("pdp-price").textContent = "Từ " + HM.vnd(p.price);
-  $("pdp-desc").textContent = "Thuộc bộ sưu tập " + col.no + " — " + col.name.toLowerCase() + ". " + col.text;
+  document.title = p.name + " " + p.code + " — Hamamoto";
+  $("crumbs").insertAdjacentHTML("beforeend",
+    '<li><a href="shop.html?category=' + cat.id + '">' + HM.label(cat) + "</a></li><li>" + HM.nt(p.name) + "</li>");
+  $("pdp-collection").innerHTML = HM.nt(p.series) + (col ? " " + HM.label(col) : "") + " · " + HM.label(cat);
+  $("pdp-collection").href = col ? "collections.html#" + col.id : "shop.html?category=" + cat.id;
+  $("pdp-name").innerHTML = HM.nt(p.name);
+  $("pdp-code").innerHTML = (EN ? HM.nt("Model No.") : "Mã sản phẩm") + " " + HM.nt(p.code);
 
-  // Gallery: cut-out + lifestyle shots (collection + concepts featuring the product)
-  var shots = [{ cutout: true, src: p.img }, { src: col.img }];
-  HM.concepts.forEach(function (c) {
-    if (shots.length < 4 && c.items.some(function (i) { return i[0] === p.id; }) && c.img !== col.img) shots.push({ src: c.img });
-  });
-  ["cat-tables.png", "cat-chairs.png"].forEach(function (s) { if (shots.length < 4) shots.push({ src: s }); });
+  $("pdp-main").innerHTML = HM.productImg(p, p.name + " " + p.code).replace(' loading="lazy"', "");
+  if (p.note) { $("pdp-note").hidden = false; $("pdp-note").innerHTML = HM.txt(p.note); }
 
-  function shotImg(s, alt) {
-    return '<img class="' + (s.cutout ? "cutout" : "is-photo") + '" src="' + HM.IMG + s.src + '" alt="' + HM.esc(alt) + '">';
-  }
-  function show(i) {
-    $("pdp-main").innerHTML = shotImg(shots[i], p.name);
-    $("pdp-thumbs").querySelectorAll("button").forEach(function (b, j) { b.setAttribute("aria-pressed", String(i === j)); });
-  }
-  $("pdp-thumbs").innerHTML = shots.map(function (s, i) {
-    return '<button type="button" aria-label="Ảnh ' + (i + 1) + '">' + shotImg(s, "") + "</button>";
-  }).join("");
-  $("pdp-thumbs").addEventListener("click", function (e) {
-    var b = e.target.closest("button");
-    if (b) show(Array.prototype.indexOf.call(b.parentNode.children, b));
-  });
-  show(0);
+  // Spec sections, as written in the catalogue (VI, or the official EN text when EN is active)
+  function list(o) { return HM.tx(o).map(function (t) { return "<li>" + (EN ? HM.nt(t) : HM.esc(t)) + "</li>"; }).join(""); }
+  $("pdp-dims").innerHTML = list(p.dims);
+  $("pdp-materials").innerHTML = list(p.materials);
+  $("pdp-features").innerHTML = list(p.features);
 
-  // Options: wood products offer both woods; upholstered pieces offer leather/fabric
-  var isWood = p.mat === "go-soi" || p.mat === "go-oc-cho";
-  var matOpts = HM.materials.filter(function (m) { return isWood ? /^go-/.test(m.id) : !/^go-/.test(m.id); });
-  $("opt-material").innerHTML = matOpts.map(function (m) {
-    return '<label><input type="radio" name="material" value="' + m.id + '"' + (m.id === p.mat ? " checked" : "") + "><span>" + m.name + "</span></label>";
-  }).join("");
-  $("opt-color").innerHTML = HM.colors.map(function (c) {
-    return '<label title="' + c.name + '"><input type="radio" name="color" value="' + c.id + '"' + (c.id === p.color ? " checked" : "") + ' aria-label="' + c.name + '"><i style="--c:' + c.hex + '"></i></label>';
-  }).join("");
+  // Options summary (upholstery types + frame finishes)
+  if (p.uph.length) {
+    $("opt-uph").innerHTML = p.uph.map(function (id) { return "<span>" + HM.label(HM.find(HM.materials, id)) + "</span>"; }).join("");
+  } else $("opt-uph-wrap").hidden = true;
+  if (p.finishes.length) {
+    $("opt-finish").innerHTML = p.finishes.map(function (id) {
+      var c = HM.find(HM.colors, id);
+      return '<span><i style="--c:' + c.hex + '"></i>' + HM.label(c) + "</span>";
+    }).join("");
+  } else $("opt-finish-wrap").hidden = true;
 
-  function updateChoice() {
-    var f = $("pdp-options");
-    var m = HM.find(HM.materials, f.material.value), c = HM.find(HM.colors, f.color.value);
-    $("mat-label").textContent = m.name;
-    $("color-label").textContent = c.name;
-    var q = "?product=" + p.id + "&material=" + m.id + "&color=" + c.id;
-    $("cta-book").href = "showroom.html" + q + "#booking";
-    $("cta-contact").href = "contact.html" + q;
-  }
-  $("pdp-options").addEventListener("change", updateChoice);
-  updateChoice();
+  var q = "?product=" + p.id;
+  $("cta-book").href = "contact.html" + q + "#booking";
+  $("cta-contact").href = "contact.html" + q + "&purpose=consult#booking";
 
-  var specs = [
-    ["Bộ sưu tập", col.no + " — " + col.name],
-    ["Nhóm hàng", cat.name],
-    ["Kích thước", p.dims],
-    ["Chất liệu tiêu chuẩn", mat.name],
-    ["Hoàn thiện", isWood ? "Dầu tự nhiên, phủ mờ" : "Bọc tháo rời, khung gỗ sồi"],
-    ["Bảo hành", "10 năm khung, 2 năm bọc"],
-    ["Thời gian đặt làm", "6 – 8 tuần"]
-  ];
-  $("pdp-specs").innerHTML = specs.map(function (s) { return "<div><dt>" + s[0] + "</dt><dd>" + HM.esc(s[1]) + "</dd></div>"; }).join("");
-
-  var related = HM.products.filter(function (x) { return x.col === p.col && x.id !== p.id; }).slice(0, 4);
+  // Related: same collection, else same category
+  var related = HM.products.filter(function (x) { return x.id !== p.id && (col ? x.col === p.col : x.cat === p.cat); }).slice(0, 4);
+  if (!related.length) related = HM.products.filter(function (x) { return x.id !== p.id && x.cat === p.cat; }).slice(0, 4);
   $("related").innerHTML = related.map(HM.card).join("");
-  $("related-link").href = "collections.html#" + col.id;
+  $("related-eyebrow").textContent = col ? "Cùng bộ sưu tập " + col.no : "Cùng nhóm hàng";
+  $("related-link").href = col ? "collections.html#" + col.id : "shop.html?category=" + cat.id;
+  if (!related.length) $("related").closest("section").hidden = true;
 })();

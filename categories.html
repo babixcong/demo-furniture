@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sản phẩm — Nhóm hàng | Hamamoto</title>
+  <meta name="description" content="Khám phá các nhóm hàng Hamamoto: sofa, ghế bành, ghế ăn, bàn, tủ kệ và giường.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Hide [data-reveal] items before first paint so they can animate in (main.js reveals them) -->
+  <script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js-reveal");</script>
+</head>
+<body data-page="categories">
+  <header id="site-header"></header>
+
+  <main>
+    <section class="page-hero">
+      <img src="assets/images/hero.png" alt="">
+      <div class="container">
+        <span class="eyebrow">Sản phẩm</span>
+        <h1 class="h1">Nội thất cho từng khoảnh khắc sống</h1>
+        <p>Tám nhóm hàng theo catalogue Hamamoto, mỗi món có thể chọn vải bọc và màu khung gỗ.</p>
+      </div>
+    </section>
+
+    <!-- Layout from idea/san-pham.png: image + beige panel rows (alternating),
+         every third category as a full-width image. Rendered from HM.categories. -->
+    <div class="cat-rows" id="cat-rows"></div>
+
+    <div class="cat-cta">
+      <a href="contact.html#booking">
+        <img src="assets/images/room-living.png" alt="" loading="lazy">
+        <strong>Đặt lịch tư vấn</strong>
+        <span class="btn-pill btn-pill--ghost">Đặt lịch</span>
+      </a>
+      <a href="professionals.html">
+        <img src="assets/images/room-kitchen.png" alt="" loading="lazy">
+        <strong>Trở thành đối tác của Hamamoto</strong>
+        <span class="btn-pill btn-pill--ghost">Tham gia</span>
+      </a>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/catalog.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    (function () {
+      var HM = window.HM;
+      var split = 0;
+      document.getElementById("cat-rows").innerHTML = HM.categories.map(function (c, i) {
+        var n = HM.products.filter(function (p) { return p.cat === c.id; }).length;
+        var href = "shop.html?category=" + c.id;
+        var label = '<span class="visually-hidden"> ' + HM.esc(c.name) + "</span>";
+        var meta = '<span class="cat-row__meta">' + n + " sản phẩm</span>";
+        var img = '<img src="' + HM.IMG + c.banner + '" alt=""' + (i > 1 ? ' loading="lazy"' : "") + ">";
+        if (i % 3 === 2) {
+          return '<section class="cat-full" data-reveal aria-labelledby="cat-' + c.id + '">' + img +
+            '<div class="cat-full__text">' + meta +
+              '<h2 class="cat-row__name" id="cat-' + c.id + '">' + HM.esc(c.name) + "</h2>" +
+              "<p>" + HM.esc(c.desc) + "</p>" +
+              '<a class="btn-pill btn-pill--light" href="' + href + '">Xem thêm' + label + "</a>" +
+            "</div></section>";
+        }
+        var reverse = split++ % 2 === 1;
+        return '<section class="cat-row' + (reverse ? " cat-row--reverse" : "") + '" data-reveal aria-labelledby="cat-' + c.id + '">' +
+          '<div class="cat-row__media">' + img + "</div>" +
+          '<div class="cat-row__text">' + meta +
+            '<h2 class="cat-row__name" id="cat-' + c.id + '">' + HM.esc(c.name) + "</h2>" +
+            "<p>" + HM.esc(c.desc) + "</p>" +
+            '<a class="btn-pill" href="' + href + '">Xem thêm' + label + "</a>" +
+          "</div></section>";
+      }).join("");
+    })();
+  </script>
+  <!-- main.js after the rows exist so the scroll reveal can observe them -->
+  <script src="js/main.js"></script>
+</body>
+</html>

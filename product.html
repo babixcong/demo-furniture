@@ -7,7 +7,7 @@
   <meta name="description" content="Chi tiết sản phẩm Hamamoto: kích thước, chất liệu, tùy chọn hoàn thiện.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="products">
@@ -21,32 +21,31 @@
     <div class="container pdp" id="pdp">
       <div class="pdp__gallery">
         <div class="pdp__main" id="pdp-main"></div>
-        <div class="pdp__thumbs" id="pdp-thumbs" role="group" aria-label="Ảnh sản phẩm"></div>
+        <p class="pdp__note" id="pdp-note" hidden></p>
       </div>
 
       <div class="pdp__info">
         <a class="eyebrow" id="pdp-collection" href="collections.html"></a>
         <h1 class="h1" id="pdp-name"></h1>
-        <p class="pdp__price" id="pdp-price"></p>
-        <p class="pdp__desc" id="pdp-desc"></p>
+        <p class="pdp__code" id="pdp-code"></p>
 
-        <form id="pdp-options" onsubmit="return false">
-          <fieldset class="pdp__options">
-            <legend>Chất liệu <span id="mat-label"></span></legend>
-            <div class="choice-row" id="opt-material"></div>
-          </fieldset>
-          <fieldset class="pdp__options">
-            <legend>Màu hoàn thiện <span id="color-label"></span></legend>
-            <div class="opt-swatches" id="opt-color"></div>
-          </fieldset>
-        </form>
+        <div class="pdp__options" id="opt-uph-wrap">
+          <p class="label" style="margin-bottom:12px;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase">Vải bọc có thể chọn</p>
+          <div class="opt-list" id="opt-uph"></div>
+        </div>
+        <div class="pdp__options" id="opt-finish-wrap">
+          <p class="label" style="margin-bottom:12px;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase">Màu khung gỗ</p>
+          <div class="finish-dots" id="opt-finish"></div>
+        </div>
 
         <div class="pdp__cta">
-          <a class="btn btn--dark btn--block" id="cta-book" href="showroom.html#booking">Đặt lịch xem tại showroom</a>
+          <a class="btn btn--dark btn--block" id="cta-book" href="contact.html#booking">Đặt lịch xem tại showroom</a>
           <a class="btn btn--outline btn--block" id="cta-contact" href="contact.html">Liên hệ tư vấn</a>
         </div>
 
-        <dl class="specs" id="pdp-specs"></dl>
+        <section class="spec-block" aria-labelledby="spec-dims"><h2 id="spec-dims">Kích thước</h2><ul id="pdp-dims"></ul></section>
+        <section class="spec-block" aria-labelledby="spec-mat"><h2 id="spec-mat">Vật liệu</h2><ul id="pdp-materials"></ul></section>
+        <section class="spec-block" aria-labelledby="spec-feat"><h2 id="spec-feat">Công năng / chức năng</h2><ul id="pdp-features"></ul></section>
       </div>
     </div>
 
@@ -54,7 +53,7 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <span class="eyebrow">Cùng bộ sưu tập</span>
+            <span class="eyebrow" id="related-eyebrow">Cùng bộ sưu tập</span>
             <h2 class="h2" id="related-title">Có thể bạn quan tâm</h2>
           </div>
           <a class="link-arrow" id="related-link" href="collections.html">Xem bộ sưu tập
@@ -68,8 +67,10 @@
 
   <footer id="site-footer"></footer>
 
+  <script src="js/catalog.js"></script>
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
   <script src="js/product.js"></script>
 </body>

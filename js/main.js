@@ -10,12 +10,12 @@
     items.forEach(function (it) {
       if (it === except) return;
       it.classList.remove("is-open");
-      var b = it.querySelector("button.nav__link");
+      var b = it.querySelector("button.nav__link, .nav__sub-toggle");
       if (b) b.setAttribute("aria-expanded", "false");
     });
   }
   items.forEach(function (it) {
-    var btn = it.querySelector("button.nav__link");
+    var btn = it.querySelector("button.nav__link, .nav__sub-toggle");
     if (!btn) return;
     btn.addEventListener("click", function () {
       var open = !it.classList.contains("is-open");
@@ -49,23 +49,47 @@
     });
   }
 
-  // ---------- Search panel ----------
-  var sBtn = document.getElementById("search-toggle");
-  var sPanel = document.getElementById("search-panel");
-  if (sBtn && sPanel) {
-    sBtn.addEventListener("click", function () {
-      var open = sPanel.hidden;
-      sPanel.hidden = !open;
-      sBtn.setAttribute("aria-expanded", String(open));
-      if (open) sPanel.querySelector("input").focus();
-    });
+  // ---------- Home: transparent header over the hero, solid once scrolled ----------
+  var overlay = document.querySelector(".site-header--overlay");
+  if (overlay) {
+    var onScroll = function () { overlay.classList.toggle("is-solid", window.scrollY > 40); };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  // ---------- Floating contact button ----------
+  var fab = document.getElementById("fab");
+  var fabBtn = fab && fab.querySelector(".fab__toggle");
+  var fabMenu = document.getElementById("fab-menu");
+  function setFab(open) {
+    fab.classList.toggle("is-open", open);
+    fabMenu.hidden = !open;
+    fabBtn.setAttribute("aria-expanded", String(open));
+  }
+  if (fab) {
+    fabBtn.addEventListener("click", function () { setFab(fabMenu.hidden); });
+    document.addEventListener("click", function (e) { if (!fabMenu.hidden && !e.target.closest("#fab")) setFab(false); });
   }
 
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
+    if (fab && !fabMenu.hidden) { setFab(false); fabBtn.focus(); }
     closeAll();
-    if (sPanel && !sPanel.hidden) { sPanel.hidden = true; sBtn.setAttribute("aria-expanded", "false"); sBtn.focus(); }
   });
+
+  // ---------- Scroll reveal: [data-reveal] fades/slides in when it enters the viewport ----------
+  var reveals = document.querySelectorAll("[data-reveal]");
+  if (reveals.length && "IntersectionObserver" in window) {
+    document.documentElement.classList.add("js-reveal");
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add("is-visible");
+        io.unobserve(en.target);
+      });
+    }, { threshold: 0.2, rootMargin: "0px 0px -8% 0px" });
+    reveals.forEach(function (el) { io.observe(el); });
+  }
 
   // ---------- Horizontal strips (prev/next buttons) ----------
   document.querySelectorAll("[data-strip-prev], [data-strip-next]").forEach(function (b) {
@@ -125,7 +149,7 @@
   if (pid) {
     var p = HM.find(HM.products, pid);
     document.querySelectorAll("[data-prefill-product]").forEach(function (el) {
-      if (p) el.value = "Quan tâm: " + p.name + " (" + HM.find(HM.collections, p.col).no + ")";
+      if (p) el.value = "Quan tâm: " + p.name + " — " + p.code;
     });
   }
 

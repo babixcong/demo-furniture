@@ -7,18 +7,21 @@
   <meta name="description" content="Gợi ý bố trí không gian theo diện tích 20–30, 30–40, 40–50 m², cho gia đình và khu bếp – ăn.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="concepts">
   <header id="site-header"></header>
 
   <main>
-    <div class="container page-head">
-      <ol class="breadcrumb"><li><a href="index.html">Trang chủ</a></li><li>Living Concepts</li></ol>
-      <h1 class="h1">Living Concepts</h1>
-      <p class="lead">Những không gian hoàn chỉnh theo diện tích và nhu cầu. Chạm vào từng điểm trên ảnh để xem sản phẩm.</p>
-    </div>
+    <section class="page-hero">
+      <img src="assets/images/room-bedroom.png" alt="">
+      <div class="container">
+        <span class="eyebrow notranslate" translate="no">Living Concepts</span>
+        <h1 class="h1">Không gian sống theo diện tích</h1>
+        <p>Những không gian hoàn chỉnh theo diện tích và nhu cầu. Chạm vào từng điểm trên ảnh để xem sản phẩm.</p>
+      </div>
+    </section>
 
     <div class="container">
       <nav class="anchor-nav" id="anchor-nav" aria-label="Các không gian"></nav>
@@ -33,7 +36,7 @@
         <p>Chuyên viên Hamamoto đề xuất bố cục và sản phẩm phù hợp với diện tích nhà bạn, miễn phí.</p>
         <div class="btn-row">
           <a class="btn btn--primary" href="contact.html">Nhận tư vấn</a>
-          <a class="btn btn--light" href="showroom.html#booking">Đặt lịch showroom</a>
+          <a class="btn btn--light" href="contact.html#booking">Đặt lịch showroom</a>
         </div>
       </div>
     </section>
@@ -41,8 +44,10 @@
 
   <footer id="site-footer"></footer>
 
+  <script src="js/catalog.js"></script>
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/main.js"></script>
   <script>
     (function () {
@@ -62,7 +67,7 @@
           list += '<a class="concept__item" href="product.html?id=' + p.id + '" data-n="' + n + '">' +
             "<b>" + n + "</b>" +
             '<span class="thumb">' + HM.productImg(p, "") + "</span>" +
-            "<span><strong>" + HM.esc(p.name) + "</strong><span>" + HM.find(HM.collections, p.col).no + " · " + HM.vnd(p.price) + "</span></span></a>";
+            "<span><strong>" + HM.nt(p.name) + "</strong><span>" + HM.nt(p.series) + " · " + HM.nt(p.code) + "</span></span></a>";
         });
         return '<section class="concept" id="' + c.id + '" aria-labelledby="' + c.id + '-t">' +
           '<div class="concept__head"><div><span class="eyebrow">' + label(c) + '</span><h2 class="h2" id="' + c.id + '-t">' + c.title + "</h2></div><p>" + c.text + "</p></div>" +

@@ -7,88 +7,97 @@
   <meta name="description" content="Hamamoto: nội thất gỗ, da và vải chế tác thủ công theo tinh thần Nhật Bản. Khám phá bộ sưu tập và đặt lịch xem showroom.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js-reveal");</script>
 </head>
 <body data-page="home">
   <header id="site-header"></header>
 
   <main>
-    <!-- 1. Hero (mockup image — replace with brand photo/video) -->
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero__media"><img src="assets/images/hero.png" alt=""></div>
-      <div class="container">
-        <div class="hero__content">
-          <span class="eyebrow">Made in Japan · Since 1948</span>
-          <h1 class="display" id="hero-title">Sự tĩnh lặng<br>của tay nghề</h1>
-          <p>Nội thất chế tác theo tinh thần Nhật Bản, để mỗi ngôi nhà có một nhịp sống chậm và bền.</p>
-          <div class="btn-row">
-            <a class="btn btn--light" href="collections.html">Khám phá bộ sưu tập</a>
-            <a class="btn btn--primary" href="showroom.html#booking">Đặt lịch showroom</a>
-          </div>
-        </div>
+    <h1 class="visually-hidden">Hamamoto — Nội thất chế tác Nhật Bản từ 1948</h1>
+
+    <!-- 1. Hero slider: one slide per collection (rendered from HM.collections) -->
+    <section class="home-hero" id="home-hero" aria-roledescription="carousel" aria-label="Các bộ sưu tập Hamamoto">
+      <div id="hero-slides"></div>
+      <div class="home-hero__arrows">
+        <button class="home-hero__prev" type="button" aria-label="Bộ sưu tập trước"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="home-hero__next" type="button" aria-label="Bộ sưu tập sau"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
-      <span class="hero__scroll" aria-hidden="true">Cuộn xuống</span>
+      <div class="home-hero__dots" id="hero-dots" role="group" aria-label="Chọn bộ sưu tập"></div>
     </section>
 
-    <!-- 2. Brand story -->
+    <!-- 2. Giới thiệu công ty -->
     <section class="section">
-      <div class="container split">
-        <div class="split__text">
-          <span class="eyebrow">Câu chuyện thương hiệu</span>
-          <h2 class="h2">Ba thế hệ, một cách làm</h2>
-          <p>Từ xưởng mộc nhỏ ở Gifu năm 1948, Hamamoto giữ nguyên một nguyên tắc: chọn gỗ tốt, ghép mộng chuẩn và hoàn thiện bằng tay. Mỗi món đồ được làm để dùng cả đời và truyền lại cho thế hệ sau.</p>
-          <a class="link-arrow" href="about.html">Về Hamamoto
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <div class="container intro" data-reveal>
+        <div class="intro__media">
+          <img src="assets/images/info-video.png" alt="Xưởng chế tác Hamamoto" loading="lazy">
+          <!-- TODO: point at the brand video when it exists -->
+          <a class="intro__play" href="about.html">
+            <span aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+            <span>Câu chuyện Hamamoto</span>
           </a>
         </div>
-        <div class="split__media split__media--tall"><img src="assets/images/info-video.png" alt="Xưởng chế tác Hamamoto" loading="lazy"></div>
+        <div class="intro__text">
+          <span class="eyebrow">Giới thiệu</span>
+          <h2 class="h2">Ba thế hệ chế tác nội thất theo tinh thần Nhật Bản</h2>
+          <p>Từ xưởng mộc nhỏ ở Gifu năm 1948, Hamamoto giữ nguyên một nguyên tắc: chọn gỗ tốt, ghép mộng chuẩn và hoàn thiện bằng tay. Mỗi món đồ được làm để dùng cả đời và truyền lại cho thế hệ sau.</p>
+          <ul class="values">
+            <li class="value"><i aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21V11M12 11c-3 0-5-2-5-5 3 0 5 2 5 5zm0 0c3 0 5-2 5-5-3 0-5 2-5 5zM6 21h12"/></svg></i>Gỗ tự nhiên FSC</li>
+            <li class="value"><i aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 9h7v6H4zM13 9h7v6h-7zM11 11h2v2h-2z"/></svg></i>Mộng ghép thủ công</li>
+            <li class="value"><i aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></i>Bảo hành 10 năm</li>
+            <li class="value"><i aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 7l3 3"/></svg></i>Đặt làm theo yêu cầu</li>
+            <li class="value"><i aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 4C10 4 5 9 5 15c0 2 .5 3.5 1 5 2-6 6-9 11-10-4 2-7 5-8 9 7 0 11-5 11-15z"/></svg></i>Bền vững</li>
+            <li class="value"><i aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg></i>Tư vấn tận tâm</li>
+          </ul>
+          <a class="btn-arrow" href="about.html">
+            <span class="btn-arrow__label">Về Hamamoto</span>
+            <span class="btn-arrow__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- 3. Collections strip -->
+    <!-- 3. Collections -->
     <section class="section section--cream" aria-labelledby="col-title">
       <div class="container">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <div>
-            <span class="eyebrow">Collections</span>
-            <h2 class="h2" id="col-title">Bộ sưu tập</h2>
+            <span class="eyebrow notranslate" translate="no">Collections</span>
+            <h2 class="h2" id="col-title">Bốn bộ sưu tập, một tinh thần chế tác</h2>
           </div>
-          <div class="strip-nav">
-            <button type="button" data-strip-prev="#collection-strip" aria-label="Trước"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-            <button type="button" data-strip-next="#collection-strip" aria-label="Sau"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-          </div>
-        </div>
-        <div class="strip" id="collection-strip"></div>
-      </div>
-    </section>
-
-    <!-- 4. Living Concepts by area -->
-    <section class="section" aria-labelledby="concept-title">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Living Concepts</span>
-            <h2 class="h2" id="concept-title">Không gian theo diện tích</h2>
-          </div>
-          <a class="link-arrow" href="living-concepts.html">Tất cả không gian
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <a class="btn-arrow" href="collections.html">
+            <span class="btn-arrow__label">Xem tất cả</span>
+            <span class="btn-arrow__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
         </div>
-        <div class="concept-grid" id="concept-grid"></div>
+        <div class="col-grid" id="col-grid" data-reveal></div>
       </div>
     </section>
 
-    <!-- 5. CTA -->
+    <!-- 4. Living Concepts -->
+    <section class="section" aria-labelledby="lc-title">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <span class="eyebrow notranslate" translate="no">Living Concepts</span>
+          <h2 class="h2" id="lc-title">Không gian sống theo diện tích</h2>
+        </div>
+        <div class="lc-block" id="lc-block" data-reveal></div>
+      </div>
+    </section>
+
+    <!-- 5. CTA → đặt lịch showroom -->
     <section class="cta" aria-labelledby="cta-title">
       <img src="assets/images/room-hallway.png" alt="" loading="lazy">
-      <div class="container">
+      <div class="container" data-reveal>
         <span class="eyebrow">Showroom</span>
         <h2 class="h1" id="cta-title">Chạm vào chất liệu, cảm nhận tay nghề</h2>
         <p>Ghé showroom để ngồi thử, xem vân gỗ và mẫu da, vải thật cùng chuyên viên tư vấn.</p>
         <div class="btn-row">
-          <a class="btn btn--primary" href="showroom.html#booking">Đặt lịch xem showroom</a>
-          <a class="btn btn--light" href="contact.html">Nhận tư vấn</a>
+          <a class="btn-arrow btn-arrow--light" href="contact.html#booking">
+            <span class="btn-arrow__label">Đặt lịch xem showroom</span>
+            <span class="btn-arrow__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
         </div>
       </div>
     </section>
@@ -96,26 +105,88 @@
 
   <footer id="site-footer"></footer>
 
+  <script src="js/catalog.js"></script>
   <script src="js/data.js"></script>
   <script src="js/layout.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/i18n.js"></script>
   <script>
     (function () {
       var HM = window.HM;
-      document.getElementById("collection-strip").innerHTML = HM.collections.map(function (c) {
-        return '<a class="tile" href="collections.html#' + c.id + '">' +
-          '<img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
-          '<div class="tile__caption"><span class="eyebrow">' + c.material + '</span>' +
-          '<h3 class="h3">' + c.no + '</h3><p>' + c.name + '</p></div></a>';
+      var arrow = '<span class="btn-arrow__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>';
+      var heroImg = { no3000: "about-live-comfortably.png", no6000: "room-living.png", no7000: "hero.png", no8200: "room-kitchen.png" };
+
+      // 1. Hero slides
+      document.getElementById("hero-slides").innerHTML = HM.collections.map(function (c, i) {
+        return '<div class="home-hero__slide' + (i ? "" : " is-active") + '" role="group" aria-roledescription="slide" aria-label="' + (i + 1) + " / " + HM.collections.length + '"' + (i ? ' aria-hidden="true"' : "") + ">" +
+          '<img src="' + HM.IMG + (heroImg[c.id] || c.img) + '" alt=""' + (i ? ' loading="lazy"' : "") + ">" +
+          '<div class="home-hero__content">' +
+            '<span class="eyebrow">Bộ sưu tập · ' + HM.esc(c.material) + "</span>" +
+            "<h2>" + HM.nt(c.no) + " — " + HM.label(c) + "</h2>" +
+            "<p>" + HM.txt({ vi: c.text, en: c.textEn }) + "</p>" +
+            '<a class="btn-arrow btn-arrow--light" href="collections.html#' + c.id + '"' + (i ? ' tabindex="-1"' : "") + '><span class="btn-arrow__label">Khám phá ngay</span>' + arrow + "</a>" +
+          "</div></div>";
+      }).join("");
+      document.getElementById("hero-dots").innerHTML = HM.collections.map(function (c, i) {
+        return '<button type="button" aria-label="' + c.no + '"' + (i ? "" : ' aria-current="true"') + "></button>";
       }).join("");
 
-      document.getElementById("concept-grid").innerHTML = HM.concepts.filter(function (c) { return /\d/.test(c.area); }).map(function (c) {
-        return '<a class="tile" href="living-concepts.html#' + c.id + '">' +
+      // 3. Collections masonry
+      document.getElementById("col-grid").innerHTML = HM.collections.map(function (c) {
+        return '<a class="tile" href="collections.html#' + c.id + '">' +
           '<img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
-          '<div class="tile__caption"><p class="area">' + c.area + ' <small>m²</small></p>' +
-          '<p>' + c.title + '</p></div></a>';
+          '<div class="tile__caption"><span class="eyebrow">' + HM.esc(c.material) + "</span>" +
+          '<h3 class="h3">' + HM.nt(c.no) + "</h3><p>" + HM.label(c) + "</p></div></a>";
       }).join("");
+
+      // 4. Living concepts: big tile + tile + area band
+      var byId = function (id) { return HM.find(HM.concepts, id); };
+      var tile = function (c) {
+        return '<a class="tile" href="living-concepts.html#' + c.id + '"><img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
+          '<div class="tile__caption"><span class="eyebrow">' + (/\d/.test(c.area) ? c.area + " m²" : c.area) + "</span>" +
+          '<h3 class="h3">' + HM.esc(c.title) + "</h3></div></a>";
+      };
+      var areas = HM.concepts.filter(function (c) { return /\d/.test(c.area); });
+      document.getElementById("lc-block").innerHTML = tile(byId("20-30")) +
+        '<div class="lc-block__right">' + tile(byId("bep-an")) +
+          '<nav class="lc-band" aria-label="Không gian theo diện tích">' + areas.map(function (c) {
+            return '<a href="living-concepts.html#' + c.id + '"><strong>' + c.area + " <small>m²</small></strong><span>" + HM.esc(c.title.split(",")[0]) + "</span></a>";
+          }).join("") + "</nav></div>";
+
+      // Hero slider behaviour: autoplay 6s, pause on hover/focus, dots + arrows, swipe
+      var root = document.getElementById("home-hero");
+      var slides = root.querySelectorAll(".home-hero__slide");
+      var dots = root.querySelectorAll("#hero-dots button");
+      var idx = 0, timer = null;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function go(n) {
+        idx = (n + slides.length) % slides.length;
+        slides.forEach(function (s, i) {
+          var on = i === idx;
+          s.classList.toggle("is-active", on);
+          s.setAttribute("aria-hidden", String(!on));
+          var a = s.querySelector("a"); if (on) a.removeAttribute("tabindex"); else a.setAttribute("tabindex", "-1");
+        });
+        dots.forEach(function (d, i) { if (i === idx) d.setAttribute("aria-current", "true"); else d.removeAttribute("aria-current"); });
+      }
+      function play() { if (!reduce) { stop(); timer = setInterval(function () { go(idx + 1); }, 6000); } }
+      function stop() { clearInterval(timer); }
+      dots.forEach(function (d, i) { d.addEventListener("click", function () { go(i); play(); }); });
+      root.querySelector(".home-hero__prev").addEventListener("click", function () { go(idx - 1); play(); });
+      root.querySelector(".home-hero__next").addEventListener("click", function () { go(idx + 1); play(); });
+      root.addEventListener("mouseenter", stop);
+      root.addEventListener("mouseleave", play);
+      root.addEventListener("focusin", stop);
+      var x0 = null;
+      root.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      root.addEventListener("touchend", function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0; x0 = null;
+        if (Math.abs(dx) > 40) { go(idx + (dx < 0 ? 1 : -1)); play(); }
+      });
+      play();
     })();
   </script>
+  <!-- main.js after the sections exist so the scroll reveal can observe them -->
+  <script src="js/main.js"></script>
 </body>
 </html>

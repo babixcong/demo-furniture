@@ -12,7 +12,7 @@
   // filter key -> [product field, option list, url param]
   var FILTERS = {
     cat: ["cat", HM.categories, "category"],
-    col: ["col", HM.collections.map(function (c) { return { id: c.id, name: c.no + " " + c.name }; }), "collection"],
+    col: ["col", HM.collections.map(function (c) { return { id: c.id, name: c.no + " " + c.name, en: c.no + " " + c.en }; }), "collection"],
     mat: ["mat", HM.materials, "material"],
     color: ["color", HM.colors, "color"]
   };
@@ -23,10 +23,10 @@
   Object.keys(FILTERS).forEach(function (key) {
     var f = FILTERS[key];
     form.querySelector('[data-filter="' + key + '"]').innerHTML = f[1].map(function (o) {
-      var n = HM.products.filter(function (p) { return p[f[0]] === o.id; }).length;
+      var n = HM.products.filter(function (p) { return has(p[f[0]], o.id); }).length;
       var dot = key === "color" ? ' class="dot" style="--c:' + o.hex + '"' : "";
       return '<label class="filter-option"><span class="filter-option__label">' +
-        '<input type="checkbox" name="' + key + '" value="' + o.id + '"' + dot + ">" + HM.esc(o.name) +
+        '<input type="checkbox" name="' + key + '" value="' + o.id + '"' + dot + ">" + HM.label(o) +
         '</span><span class="count">' + n + "</span></label>";
     }).join("");
   });
@@ -44,16 +44,19 @@
   state.q = (params.get("q") || "").trim();
   q.value = state.q;
 
+  // product fields may be a single id or a list of ids (materials, finishes)
+  function has(v, id) { return Array.isArray(v) ? v.indexOf(id) > -1 : v === id; }
+
   function norm(s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d"); }
 
   function matches(p) {
     for (var key in state.sel) {
       var sel = state.sel[key];
-      if (sel.length && sel.indexOf(p[FILTERS[key][0]]) < 0) return false;
+      if (sel.length && !sel.some(function (id) { return has(p[FILTERS[key][0]], id); })) return false;
     }
     if (state.q) {
-      var col = HM.find(HM.collections, p.col);
-      var hay = norm(p.name + " " + col.no + " " + col.name + " " + HM.find(HM.categories, p.cat).name);
+      var cat = HM.find(HM.categories, p.cat);
+      var hay = norm([p.name, p.code, p.series, cat.name, cat.en].join(" "));
       if (hay.indexOf(norm(state.q)) < 0) return false;
     }
     return true;
@@ -67,11 +70,22 @@
     history.replaceState(null, "", location.pathname + (s ? "?" + s : ""));
   }
 
+  // Heading + breadcrumb follow the category when exactly one is selected
+  var titleEl = document.getElementById("listing-title");
+  var crumbs = document.getElementById("crumbs");
+  function updateTitle() {
+    var c = state.sel.cat.length === 1 ? HM.find(HM.categories, state.sel.cat[0]) : null;
+    titleEl.textContent = c ? c.name : "Tất cả sản phẩm";
+    document.title = (c ? c.name : "Sản phẩm") + " — Hamamoto";
+    var last = crumbs.querySelector("li[data-cat]");
+    if (last) last.remove();
+    if (c) crumbs.insertAdjacentHTML("beforeend", '<li data-cat>' + HM.esc(c.name) + "</li>");
+  }
+
   function render() {
     var list = HM.products.filter(matches);
-    if (state.sort === "price-asc") list.sort(function (a, b) { return a.price - b.price; });
-    if (state.sort === "price-desc") list.sort(function (a, b) { return b.price - a.price; });
     if (state.sort === "name") list.sort(function (a, b) { return a.name.localeCompare(b.name, "vi"); });
+    if (state.sort === "code") list.sort(function (a, b) { return a.code.localeCompare(b.code, "en", { numeric: true }); });
 
     var pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
     state.page = Math.min(state.page, pages);
@@ -86,6 +100,7 @@
     }
     pager.innerHTML = html;
     syncUrl();
+    updateTitle();
   }
 
   form.addEventListener("change", function () {
