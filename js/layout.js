@@ -31,9 +31,9 @@
   var productsPanel =
     '<div class="nav__panel" id="panel-products"><div class="container dropdown dropdown--grid">' +
       HM.categories.map(function (c) {
-        return '<a href="shop.html?category=' + c.id + '"><strong>' + HM.esc(c.name) + "</strong><span>" + HM.esc(c.desc) + "</span></a>";
+        return '<a class="dropdown__cat" href="shop.html?category=' + c.id + '">' + HM.catIcon(c.id, 22) + "<strong>" + HM.esc(c.name) + "</strong><span>" + HM.esc(c.desc) + "</span></a>";
       }).join("") +
-      '<a href="shop.html"><strong>Tất cả sản phẩm</strong><span>Tìm kiếm và lọc theo chất liệu, màu</span></a>' +
+      '<a class="dropdown__cat" href="shop.html">' + HM.catIcon("all", 22) + "<strong>Tất cả sản phẩm</strong><span>Tìm kiếm và lọc theo chất liệu, màu</span></a>" +
     "</div></div>";
 
   // Order (brief 2): Logo · Thương hiệu · Collections · Living Concepts · Sản phẩm · Liên hệ · CTA · Ngôn ngữ

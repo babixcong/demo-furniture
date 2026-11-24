@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="contact">
@@ -15,8 +18,8 @@
 
   <!-- Brief 2: the Showroom page is merged here (showroom.html now redirects to #showroom) -->
   <main>
-    <section class="page-hero">
-      <img src="assets/images/room-hallway.png" alt="">
+    <section class="page-hero page-hero--left">
+      <img src="assets/images/collections/1.jpg" alt="">
       <div class="container">
         <span class="eyebrow">Liên hệ &amp; Showroom</span>
         <h1 class="h1">Một ngôi nhà để bạn bước vào</h1>
@@ -48,12 +51,12 @@
     <section class="section section--cream" aria-labelledby="photos-t">
       <div class="container">
         <div class="section-head"><div><span class="eyebrow">Hình ảnh</span><h2 class="h2" id="photos-t">Không gian showroom</h2></div></div>
-        <div class="showroom-strip">
-          <img src="assets/images/room-living.png" alt="Khu phòng khách" loading="lazy">
-          <img src="assets/images/room-bedroom.png" alt="Khu phòng ngủ" loading="lazy">
-          <img src="assets/images/room-kitchen.png" alt="Khu bếp – ăn" loading="lazy">
-          <img src="assets/images/cat-tables.png" alt="Thư viện mẫu gỗ" loading="lazy">
-          <img src="assets/images/cat-sofas.png" alt="Khu sofa" loading="lazy">
+        <div class="showroom-strip" data-lightbox="Không gian showroom">
+          <button type="button" class="showroom-strip__item" data-lightbox-item aria-label="Phóng to: Lối vào showroom Hamamoto"><img src="assets/images/collections/4.jpg" alt="Lối vào showroom Hamamoto" loading="lazy"></button>
+          <button type="button" class="showroom-strip__item" data-lightbox-item aria-label="Phóng to: Quầy lễ tân và bảng hiệu Hamamoto"><img src="assets/images/collections/1.jpg" alt="Quầy lễ tân và bảng hiệu Hamamoto" loading="lazy"></button>
+          <button type="button" class="showroom-strip__item" data-lightbox-item aria-label="Phóng to: Hành lang khung gỗ sồi"><img src="assets/images/collections/3.jpg" alt="Hành lang khung gỗ sồi" loading="lazy"></button>
+          <button type="button" class="showroom-strip__item" data-lightbox-item aria-label="Phóng to: Không gian trưng bày với cột đèn đá"><img src="assets/images/collections/5.jpg" alt="Không gian trưng bày với cột đèn đá" loading="lazy"></button>
+          <button type="button" class="showroom-strip__item" data-lightbox-item aria-label="Phóng to: Khu tư vấn và kệ mẫu vật liệu"><img src="assets/images/collections/6.jpg" alt="Khu tư vấn và kệ mẫu vật liệu" loading="lazy"></button>
         </div>
       </div>
     </section>

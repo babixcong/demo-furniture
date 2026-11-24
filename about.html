@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="brand">
@@ -15,7 +18,7 @@
 
   <main>
     <section class="page-hero">
-      <img src="assets/images/about-live-comfortably.png" alt="">
+      <img src="assets/images/collections/1.jpg" alt="">
       <div class="container">
         <span class="eyebrow">Hamamoto · Since 1948</span>
         <h1 class="h1">Làm chậm, để dùng lâu</h1>
@@ -27,10 +30,81 @@
       <div class="container split">
         <div class="split__text">
           <span class="split__num">01 — Lịch sử</span>
-          <h2 class="h2">Từ xưởng mộc nhỏ ở Gifu</h2>
-          <p>Năm 1948, ông Hamamoto Kenji mở xưởng mộc đầu tiên bên dòng sông Nagara. Ba thế hệ sau, xưởng vẫn giữ những chiếc bàn bào cũ và cách làm đã thành nếp: chậm, kỹ và trung thực với vật liệu.</p>
+          <h2 class="h2">Khởi đầu từ Hiroshima</h2>
+          <p>Năm 1948, giữa giai đoạn tái thiết sau chiến tranh, Hamamoto bắt đầu là một hiệp hội làm mộc dành cho người khiếm thính và khiếm khuyết về nói ở Hiroshima. Bốn năm sau, Công ty Cổ phần Hamamoto Kogei ra đời, với xưởng Ujina tự làm trọn quy trình từ xẻ gỗ đến lắp ráp thành phẩm.</p>
         </div>
         <div class="split__media"><img src="assets/images/info-video.png" alt="" loading="lazy"></div>
+      </div>
+
+      <!-- Timeline: Hamamoto Kogei history (client-supplied), plus the Vietnam showroom.
+           Vertical; milestones alternate sides on desktop. Each item reveals on scroll (data-reveal)
+           and the rail fills with scroll progress (js/main.js). -->
+      <div class="container timeline-wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Hành trình</span><h2 class="h2">Gần tám thập kỷ chế tác</h2></div>
+        </div>
+        <div class="timeline-track">
+          <span class="timeline__rail" aria-hidden="true"><span class="timeline__fill"></span></span>
+          <ol class="timeline" aria-label="Lịch sử Hamamoto">
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">1948</span>
+            <strong>Khởi đầu ở Hiroshima</strong>
+            <p>Một hiệp hội làm mộc dành cho người khiếm thính và khiếm khuyết về nói, ra đời trong giai đoạn tái thiết sau chiến tranh.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">1952</span>
+            <strong>Hamamoto Kogei ra đời</strong>
+            <p>Thành lập Công ty Cổ phần Hamamoto Kogei. Xưởng Ujina ở quận Minami, Hiroshima, làm trọn quy trình, từ xẻ gỗ đến lắp ráp đồ thành phẩm.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">1956</span>
+            <strong>Văn phòng Tokyo</strong>
+            <p>Mở văn phòng kinh doanh ở Tokyo, rồi tiếp tục mở thêm văn phòng khắp Nhật Bản.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">1965</span>
+            <strong>Xưởng Dejima &amp; Saeki</strong>
+            <p>Hai xưởng Dejima và Saeki bắt đầu hoạt động.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">1991</span>
+            <strong>Xưởng Saeki mới</strong>
+            <p>Xây mới xưởng Saeki.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">1996</span>
+            <strong>Kho vận Dejima</strong>
+            <p>Xây mới kho vận Dejima.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">2003</span>
+            <strong>Trụ sở về Dejima</strong>
+            <p>Chuyển trụ sở và showroom về Dejima.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">2015</span>
+            <strong>Thế hệ lãnh đạo mới</strong>
+            <p>Ông Hamamoto Yohei lên làm giám đốc.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">2018</span>
+            <strong>70 năm thành lập</strong>
+            <p>Kỷ niệm 70 năm thành lập.</p>
+          </li>
+          <li class="timeline__item" data-reveal>
+            <span class="timeline__year">2026</span>
+            <strong>Dòng gỗ nguyên khối Putila</strong>
+            <p>Ra mắt dòng “Putila” làm từ gỗ nguyên khối. Dòng này chỉ bán trên cửa hàng trực tuyến của hãng và được trưng bày ở các showroom Hamamoto trên khắp Nhật Bản.</p>
+          </li>
+          <li class="timeline__item timeline__item--next" data-reveal>
+            <span class="timeline__year">2026</span>
+            <span class="timeline__badge">Đang hoàn thiện</span>
+            <strong>Showroom tại Việt Nam</strong>
+            <p>Không gian trưng bày chính hãng đang được hoàn thiện.</p>
+            <a class="link-arrow" href="contact.html#showroom">Xem showroom <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </li>
+        </ol>
+        </div>
       </div>
     </section>
 

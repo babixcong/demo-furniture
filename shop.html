@@ -8,16 +8,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="products">
   <header id="site-header"></header>
 
   <main>
-    <div class="container page-head">
+    <!-- Banner: heading + text follow the selected category (js/shop.js) -->
+    <section class="page-hero shop-hero">
+      <img src="assets/images/collections/10.jpg" alt="">
+      <div class="container">
+        <span class="eyebrow">Sản phẩm · Catalogue Hamamoto</span>
+        <h1 class="h1" id="listing-title">Tất cả sản phẩm</h1>
+        <p id="listing-desc">Thông số theo catalogue Hamamoto. Đặt lịch để xem mẫu vật liệu và màu thật tại showroom.</p>
+      </div>
+    </section>
+
+    <div class="container shop-head">
       <ol class="breadcrumb" id="crumbs"><li><a href="index.html">Trang chủ</a></li><li><a href="categories.html">Sản phẩm</a></li></ol>
-      <h1 class="h1" id="listing-title">Tất cả sản phẩm</h1>
-      <p class="lead">Thông số theo catalogue Hamamoto. Đặt lịch để xem mẫu vật liệu và màu thật tại showroom.</p>
+      <!-- Nhóm hàng: same grid as the home page, used here as the category filter -->
+      <nav class="cat-grid cat-grid--filter" id="shop-cats" aria-label="Lọc theo nhóm hàng"></nav>
     </div>
 
     <div class="container">
@@ -46,7 +59,6 @@
       <button class="btn btn--outline btn--sm filters__toggle" type="button" aria-controls="filters" aria-expanded="false">Bộ lọc</button>
 
       <form class="filters" id="filters" aria-label="Bộ lọc sản phẩm" onsubmit="return false">
-        <fieldset class="filter-group"><legend>Nhóm hàng</legend><div class="filter-list" data-filter="cat"></div></fieldset>
         <fieldset class="filter-group"><legend>Bộ sưu tập</legend><div class="filter-list" data-filter="col"></div></fieldset>
         <fieldset class="filter-group"><legend>Chất liệu bọc</legend><div class="filter-list" data-filter="mat"></div></fieldset>
         <fieldset class="filter-group"><legend>Màu khung gỗ</legend><div class="filter-list" data-filter="color"></div></fieldset>
