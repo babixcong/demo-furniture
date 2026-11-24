@@ -133,12 +133,16 @@
     (function () {
       var HM = window.HM;
       var arrow = '<span class="btn-arrow__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>';
-      var heroImg = { no3000: "about-live-comfortably.png", no6000: "room-living.png", no7000: "hero.png", no8200: "room-kitchen.png" };
+      // TẠM: banner dùng ảnh trong assets/images/collections/ — mỗi ảnh một slide,
+      // nội dung xoay vòng theo HM.collections. Thay lại khi có ảnh banner chính thức.
+      var heroImgs = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14].map(function (n) { return "collections/" + n + ".jpg"; });
+      var nCol = HM.collections.length;
 
       // 1. Hero slides
-      document.getElementById("hero-slides").innerHTML = HM.collections.map(function (c, i) {
-        return '<div class="home-hero__slide' + (i ? "" : " is-active") + '" role="group" aria-roledescription="slide" aria-label="' + (i + 1) + " / " + HM.collections.length + '"' + (i ? ' aria-hidden="true"' : "") + ">" +
-          '<img src="' + HM.IMG + (heroImg[c.id] || c.img) + '" alt=""' + (i ? ' loading="lazy"' : "") + ">" +
+      document.getElementById("hero-slides").innerHTML = heroImgs.map(function (img, i) {
+        var c = HM.collections[i % nCol];
+        return '<div class="home-hero__slide' + (i ? "" : " is-active") + '" role="group" aria-roledescription="slide" aria-label="' + (i + 1) + " / " + heroImgs.length + '"' + (i ? ' aria-hidden="true"' : "") + ">" +
+          '<img src="' + HM.IMG + img + '" alt=""' + (i ? ' loading="lazy"' : "") + ">" +
           '<div class="home-hero__content">' +
             '<span class="eyebrow">Bộ sưu tập · ' + HM.esc(c.material) + "</span>" +
             "<h2>" + HM.nt(c.no) + " — " + HM.label(c) + "</h2>" +
@@ -146,8 +150,8 @@
             '<a class="btn-arrow btn-arrow--light" href="collections.html#' + c.id + '"' + (i ? ' tabindex="-1"' : "") + '><span class="btn-arrow__label">Khám phá ngay</span>' + arrow + "</a>" +
           "</div></div>";
       }).join("");
-      document.getElementById("hero-dots").innerHTML = HM.collections.map(function (c, i) {
-        return '<button type="button" aria-label="' + c.no + '"' + (i ? "" : ' aria-current="true"') + "></button>";
+      document.getElementById("hero-dots").innerHTML = heroImgs.map(function (img, i) {
+        return '<button type="button" aria-label="Slide ' + (i + 1) + '"' + (i ? "" : ' aria-current="true"') + "></button>";
       }).join("");
 
       // 3. Category grid: one cell per HM.categories entry + "all products"
