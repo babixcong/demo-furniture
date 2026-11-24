@@ -1,6 +1,7 @@
 /* Sản phẩm listing: search, filters (nhóm hàng / bộ sưu tập / chất liệu / màu),
-   sort and pagination over HM.products. Filter state is mirrored in the URL
-   (?category=&collection=&material=&color=&q=) so links from menus work. */
+   sort and pagination over HM.products. The whole state is mirrored in the URL
+   (?category=&collection=&material=&color=&q=&sort=&page=) so links from menus
+   work, a reload keeps it, and Back/Forward step through filter/page changes. */
 (function () {
   var HM = window.HM;
   var PER_PAGE = 9;
@@ -19,10 +20,12 @@
 
   var state = { page: 1, sort: "featured", q: "", sel: { cat: [], col: [], mat: [], color: [] } };
 
-  // Build filter checkboxes with real counts
+  // Build filter checkboxes with real counts (the category filter is the grid above the listing)
   Object.keys(FILTERS).forEach(function (key) {
     var f = FILTERS[key];
-    form.querySelector('[data-filter="' + key + '"]').innerHTML = f[1].map(function (o) {
+    var box = form.querySelector('[data-filter="' + key + '"]');
+    if (!box) return;
+    box.innerHTML = f[1].map(function (o) {
       var n = HM.products.filter(function (p) { return has(p[f[0]], o.id); }).length;
       var dot = key === "color" ? ' class="dot" style="--c:' + o.hex + '"' : "";
       return '<label class="filter-option"><span class="filter-option__label">' +
@@ -31,18 +34,60 @@
     }).join("");
   });
 
-  // Read initial state from URL
-  var params = new URLSearchParams(location.search);
-  Object.keys(FILTERS).forEach(function (key) {
-    var v = params.get(FILTERS[key][2]);
-    if (!v) return;
-    v.split(",").forEach(function (id) {
-      var box = form.querySelector('input[name="' + key + '"][value="' + id + '"]');
-      if (box) { box.checked = true; state.sel[key].push(id); }
-    });
+  // Category grid (same look as the home page): one category at a time, or "all"
+  var cats = document.getElementById("shop-cats");
+  var catCell = function (id, name, n, extra) {
+    return '<button type="button" class="cat-grid__cell' + (extra || "") + '" data-cat="' + id + '" aria-pressed="false">' + HM.catIcon(id, 26) +
+      '<span class="cat-grid__name">' + name + '</span><span class="cat-grid__count">' + n + " mẫu</span></button>";
+  };
+  cats.innerHTML = HM.categories.map(function (c) {
+    return catCell(c.id, HM.label(c), HM.products.filter(function (p) { return p.cat === c.id; }).length);
+  }).join("") + catCell("all", "Tất cả sản phẩm", HM.products.length, " cat-grid__cell--all");
+  cats.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-cat]");
+    if (!b) return;
+    var id = b.getAttribute("data-cat");
+    // clicking the active category again goes back to all products
+    state.sel.cat = id === "all" || (state.sel.cat.length === 1 && state.sel.cat[0] === id) ? [] : [id];
+    state.page = 1;
+    render(true);
   });
-  state.q = (params.get("q") || "").trim();
-  q.value = state.q;
+  function paintCats() {
+    cats.querySelectorAll("button[data-cat]").forEach(function (b) {
+      var id = b.getAttribute("data-cat");
+      var on = id === "all" ? !state.sel.cat.length : state.sel.cat.indexOf(id) > -1;
+      b.setAttribute("aria-pressed", String(on));
+    });
+  }
+
+  var sortEl = document.getElementById("sort");
+  var SORTS = ["featured", "name", "code"];
+
+  // Read state from the URL (on load and on Back/Forward) and reflect it in the controls
+  function readUrl() {
+    var params = new URLSearchParams(location.search);
+    Object.keys(FILTERS).forEach(function (key) {
+      var ids = (params.get(FILTERS[key][2]) || "").split(",");
+      state.sel[key] = [];
+      var boxes = form.querySelectorAll('input[name="' + key + '"]');
+      if (!boxes.length) {
+        // no checkboxes (category grid): keep the valid ids from the URL
+        state.sel[key] = FILTERS[key][1].filter(function (o) { return ids.indexOf(o.id) > -1; }).map(function (o) { return o.id; });
+        return;
+      }
+      boxes.forEach(function (box) {
+        box.checked = ids.indexOf(box.value) > -1;
+        if (box.checked) state.sel[key].push(box.value);
+      });
+    });
+    state.q = (params.get("q") || "").trim();
+    q.value = state.q;
+    var sort = params.get("sort");
+    state.sort = SORTS.indexOf(sort) > -1 ? sort : "featured";
+    sortEl.value = state.sort;
+    state.page = Math.max(1, parseInt(params.get("page"), 10) || 1);
+  }
+  readUrl();
 
   // product fields may be a single id or a list of ids (materials, finishes)
   function has(v, id) { return Array.isArray(v) ? v.indexOf(id) > -1 : v === id; }
@@ -62,27 +107,35 @@
     return true;
   }
 
-  function syncUrl() {
+  // push = new history entry (filter / sort / page clicks); otherwise replace (typing, initial load)
+  function syncUrl(push) {
     var u = new URLSearchParams();
     Object.keys(FILTERS).forEach(function (k) { if (state.sel[k].length) u.set(FILTERS[k][2], state.sel[k].join(",")); });
     if (state.q) u.set("q", state.q);
+    if (state.sort !== "featured") u.set("sort", state.sort);
+    if (state.page > 1) u.set("page", state.page);
     var s = u.toString();
-    history.replaceState(null, "", location.pathname + (s ? "?" + s : ""));
+    var url = location.pathname + (s ? "?" + s : "") + location.hash;
+    if (url === location.pathname + location.search + location.hash) return;
+    history[push ? "pushState" : "replaceState"](null, "", url);
   }
 
-  // Heading + breadcrumb follow the category when exactly one is selected
+  // Banner heading + text and the breadcrumb follow the category when exactly one is selected
   var titleEl = document.getElementById("listing-title");
+  var descEl = document.getElementById("listing-desc");
+  var defaultDesc = descEl.textContent;
   var crumbs = document.getElementById("crumbs");
   function updateTitle() {
     var c = state.sel.cat.length === 1 ? HM.find(HM.categories, state.sel.cat[0]) : null;
     titleEl.textContent = c ? c.name : "Tất cả sản phẩm";
+    descEl.textContent = c ? c.desc : defaultDesc;
     document.title = (c ? c.name : "Sản phẩm") + " — Hamamoto";
     var last = crumbs.querySelector("li[data-cat]");
     if (last) last.remove();
     if (c) crumbs.insertAdjacentHTML("beforeend", '<li data-cat>' + HM.esc(c.name) + "</li>");
   }
 
-  function render() {
+  function render(push) {
     var list = HM.products.filter(matches);
     if (state.sort === "name") list.sort(function (a, b) { return a.name.localeCompare(b.name, "vi"); });
     if (state.sort === "code") list.sort(function (a, b) { return a.code.localeCompare(b.code, "en", { numeric: true }); });
@@ -99,18 +152,22 @@
       html += '<button type="button" class="page-btn" data-page="' + i + '"' + (i === state.page ? ' aria-current="page"' : "") + ">" + i + "</button>";
     }
     pager.innerHTML = html;
-    syncUrl();
+    syncUrl(push);
     updateTitle();
+    paintCats();
   }
 
   form.addEventListener("change", function () {
     Object.keys(FILTERS).forEach(function (k) {
+      if (!form.querySelector('[data-filter="' + k + '"]')) return; // category comes from the grid
       state.sel[k] = Array.prototype.map.call(form.querySelectorAll('input[name="' + k + '"]:checked'), function (i) { return i.value; });
     });
     state.page = 1;
-    render();
+    render(true);
   });
+  // "Xóa bộ lọc" clears the category too
   form.addEventListener("reset", function () {
+    state.sel.cat = [];
     setTimeout(function () { form.dispatchEvent(new Event("change")); }, 0);
   });
 
@@ -120,13 +177,13 @@
     t = setTimeout(function () { state.q = q.value.trim(); state.page = 1; render(); }, 200);
   });
 
-  document.getElementById("sort").addEventListener("change", function (e) { state.sort = e.target.value; render(); });
+  sortEl.addEventListener("change", function () { state.sort = sortEl.value; state.page = 1; render(true); });
 
   pager.addEventListener("click", function (e) {
     var b = e.target.closest("button[data-page]");
     if (!b) return;
     state.page = +b.getAttribute("data-page");
-    render();
+    render(true);
     document.getElementById("listing").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
@@ -135,6 +192,8 @@
     var open = form.classList.toggle("is-open");
     toggle.setAttribute("aria-expanded", String(open));
   });
+
+  window.addEventListener("popstate", function () { readUrl(); render(); });
 
   render();
 })();

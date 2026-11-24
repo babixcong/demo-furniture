@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="concepts">
@@ -15,11 +18,11 @@
 
   <main>
     <section class="page-hero">
-      <img src="assets/images/room-bedroom.png" alt="">
+      <img src="assets/images/collections/8.jpg" alt="">
       <div class="container">
         <span class="eyebrow notranslate" translate="no">Living Concepts</span>
         <h1 class="h1">Không gian sống theo diện tích</h1>
-        <p>Những không gian hoàn chỉnh theo diện tích và nhu cầu. Chạm vào từng điểm trên ảnh để xem sản phẩm.</p>
+        <p>Những không gian hoàn chỉnh theo diện tích và nhu cầu. Di chuột lên từng món đồ trong ảnh để xem sản phẩm.</p>
       </div>
     </section>
 
@@ -63,7 +66,11 @@
         c.items.forEach(function (it, i) {
           var p = HM.find(HM.products, it[0]);
           var n = i + 1;
-          spots += '<a class="hotspot" href="product.html?id=' + p.id + '" style="left:' + it[1] + '%;top:' + it[2] + '%" data-n="' + n + '" aria-label="' + n + ". " + HM.esc(p.name) + '">' + n + "</a>";
+          // invisible box over the piece of furniture; its number + name show on hover / focus
+          spots += '<a class="hotspot-area" href="product.html?id=' + p.id + '" data-n="' + n + '" aria-label="' + n + ". " + HM.esc(p.name + " " + p.code) + '"' +
+            ' style="left:' + it[1] + '%;top:' + it[2] + '%;width:' + it[3] + '%;height:' + it[4] + '%">' +
+            '<span class="hotspot" aria-hidden="true">' + n + '</span>' +
+            '<span class="hotspot__label" aria-hidden="true">' + HM.nt(p.name) + "<small>" + HM.nt(p.code) + "</small></span></a>";
           list += '<a class="concept__item" href="product.html?id=' + p.id + '" data-n="' + n + '">' +
             "<b>" + n + "</b>" +
             '<span class="thumb">' + HM.productImg(p, "") + "</span>" +
