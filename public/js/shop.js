@@ -182,9 +182,14 @@
   pager.addEventListener("click", function (e) {
     var b = e.target.closest("button[data-page]");
     if (!b) return;
-    state.page = +b.getAttribute("data-page");
-    render(true);
-    document.getElementById("listing").scrollIntoView({ behavior: "smooth", block: "start" });
+    var n = +b.getAttribute("data-page");
+    if (n === state.page) return;
+    // page change: cover with the site loader, swap the products and jump to the listing underneath
+    HM.loader.flash(function () {
+      state.page = n;
+      render(true);
+      document.getElementById("listing").scrollIntoView({ behavior: "instant", block: "start" });
+    });
   });
 
   var toggle = document.querySelector(".filters__toggle");

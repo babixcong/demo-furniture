@@ -11,9 +11,9 @@ window.HM = (function () {
       name: "Hamamoto Showroom Hà Nội",
       address: "B1-R1, MComplex, TTTM Vincom Mega Mall Royal City, 72A Nguyễn Trãi, Hà Nội",
       hours: "09:00 – 21:00, Thứ Hai – Chủ Nhật",
-      phone: "12345678",
-      phoneHref: "tel:+12345678",
-      email: "anhtu@email.com",
+      phone: "0123456789",
+      phoneHref: "tel:+0123456789",
+      email: "example@email.com",
       map: "https://maps.google.com/maps?q=21.0031749,105.8154535&z=17&t=k&output=embed",
       mapLink: "https://www.google.com/maps/search/?api=1&query=21.0031749,105.8154535"
     },
@@ -23,6 +23,13 @@ window.HM = (function () {
       { code: "en", label: "EN", name: "English" },
       { code: "ja", label: "日本語", name: "日本語" }
     ],
+    // Form submissions (contact.html: đặt lịch / tư vấn, professionals.html: đối tác).
+    // The browser POSTs to the Cloudflare Worker (worker/index.js), which checks Turnstile and
+    // forwards to Google Sheets via Apps Script. See README.md → "Form → Google Sheet".
+    forms: {
+      api: "/api",  // same origin as the site (Worker); opened as file:// = demo mode, nothing is sent
+      turnstileSiteKey: "0x4AAAAAAGR52dYZBTiLhce7"
+    },
     // Floating contact button (bottom-right). TODO: replace with the real page / Zalo number.
     chat: {
       messenger: "https://m.me/hamamoto",        // Facebook Page username → m.me/<username>
@@ -187,11 +194,37 @@ window.HM = (function () {
     return '<svg class="cat-icon" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">' + (CAT_ICONS[id] || CAT_ICONS.all) + "</svg>";
   }
 
+  // "Vì sao chọn Hamamoto" — five tabs (index.html + about.html, rendered by js/main.js into [data-why]).
+  // Figures as published by the manufacturer. TODO: replace the temporary photos with the real ones
+  // (oak cross-section, Dejima factory, oak table top, steam-bending mould, inspection sticker).
+  var why = [
+    { id: "vat-lieu", title: "Vật liệu", img: "collections/12.jpg", caption: "Mặt cắt thân gỗ sồi",
+      heading: "Gỗ sồi nguyên khối, từ cây trên 100 năm tuổi",
+      text: "Từ ngày đầu Hamamoto đã gắn với nara, loại sồi Nhật cứng, nặng và bền, vân mịn, càng dùng càng sâu màu. Hãng chọn gỗ nguyên khối dù đắt hơn ván lạng, và dùng nara cùng với oak chọn lọc.",
+      specs: [["Loại gỗ", "Nara và oak, cùng họ sồi"], ["Tuổi cây", "Trên 100 năm"], ["Vân hiếm", "Vân hổ (torafu), hiếm gặp, đặc trưng của họ sồi"], ["Chất liệu bọc", "Hơn 60 loại da và vải"]] },
+    { id: "lam-tai-nhat", title: "Làm tại Nhật", img: "collections/4.jpg", caption: "Nhà máy Dejima, Hiroshima",
+      heading: "Hai nhà máy, đều ở Hiroshima",
+      text: "Từ gia công đến hoàn thiện đều làm tại Nhật. Hãng tin rằng làm ở gần người dùng thì mới nghe được cảm nhận của họ để đưa vào sản phẩm, và người làm ra phải hài lòng trước đã.",
+      specs: [["Nhà máy Dejima", "Bàn, tủ, bàn học. Có dây chuyền sơn UV"], ["Nhà máy thứ hai", "Ghế và sofa. Uốn gỗ, cắt may chất liệu bọc"], ["Chứng nhận", "Dấu “Đồ gỗ sản xuất tại Nhật” của hiệp hội ngành nội thất Nhật Bản"]] },
+    { id: "thiet-ke", title: "Thiết kế", img: "collections/7.jpg", caption: "Mặt bàn gỗ sồi nguyên khối",
+      heading: "Kiểu dáng cơ bản, mua thêm vẫn đồng bộ",
+      text: "Đường cong nối đường cong, cạnh được vát kỹ, vân sồi làm chủ đạo. Vì là đồ dùng hằng ngày nên an toàn đặt trước vẻ ngoài: còn một chỗ băn khoăn là sửa cho đến khi đạt.",
+      specs: [["Chọn mẫu", "Vài chục phương án, chỉ giữ khoảng 2"], ["Trước sản xuất", "Bản vẽ, mẫu thử, kiểm tra độ chắc và độ bền"], ["Sau khi bán", "Vẫn cải tiến ở chỗ khó thấy: đệm khó xẹp hơn, vít không bị lỏng"]] },
+    { id: "ky-thuat", title: "Kỹ thuật", img: "collections/9.jpg", caption: "Ép uốn gỗ trong khuôn",
+      heading: "Uốn gỗ bằng hơi nước, không cắt đứt thớ",
+      text: "Gỗ được hấp hơi nước nhiệt độ cao rồi ép trong khuôn nên giữ nguyên thớ, vừa đẹp vân vừa bền. Trước khi sơn, bề mặt được chà nhám nhiều lượt; công đoạn lau màu làm nổi vân gỗ bắt buộc làm bằng tay.",
+      specs: [["Uốn gỗ", "6 bước, để ổn định 6 đến 9 ngày"], ["Chà nhám", "Từ 40 loại giấy nhám, 6 loại máy"], ["Sơn", "10 công đoạn. Mặt bàn phủ UV hai mặt, độ cứng 4H"], ["Đồ gá", "Gần 1.000 bộ, thợ tự làm cho từng thiết kế"]] },
+    { id: "an-toan", title: "An toàn", img: "collections/11.jpg", caption: "Dán tem sau khi kiểm tra đạt",
+      heading: "Hơn 300 hạng mục kiểm tra trước khi xuất xưởng",
+      text: "Tiêu chuẩn nội bộ đặt độ bền cao hơn quy chuẩn JIS. Mỗi sản phẩm đi qua kiểm tra vật liệu, kiểm tra từng công đoạn và kiểm tra cuối, đạt mới được dán tem.",
+      specs: [["Thử va đập ghế", "Tạ 60 kg, nhấc và thả 4.000 lần"], ["Lực tĩnh mặt ngồi", "1.300 N, giữ 10 giây, 10 lần"], ["Formaldehyde", "F☆☆☆☆, hạng phát thải thấp nhất, cho ván, keo và sơn"]] }
+  ];
+
   function param(name) { return new URLSearchParams(location.search).get(name); }
 
   return {
     IMG: IMG, site: site, categories: categories, materials: materials, colors: colors,
-    collections: collections, products: products, concepts: concepts, news: news, swatches: CAT.swatches,
+    collections: collections, products: products, concepts: concepts, news: news, why: why, swatches: CAT.swatches,
     vnd: vnd, find: find, esc: esc, nt: nt, t: t, tx: tx, txt: txt, label: label, lang: lang,
     productImg: productImg, card: card, param: param, catIcon: catIcon
   };

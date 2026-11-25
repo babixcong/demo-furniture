@@ -115,4 +115,77 @@
   if (h) { h.className = "site-header" + (page === "home" ? " site-header--overlay" : ""); h.innerHTML = header; }
   if (f) { f.className = "site-footer"; f.innerHTML = footer; }
   document.body.insertAdjacentHTML("beforeend", fab);
+
+  // Back-to-top button (every page): sits above the contact button, appears after scrolling down;
+  // the ring around it fills with the reading progress.
+  document.body.insertAdjacentHTML("beforeend",
+    '<button class="to-top" id="to-top" type="button" aria-label="Lên đầu trang" tabindex="-1">' +
+      '<svg class="to-top__ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5"/><circle class="to-top__progress" cx="24" cy="24" r="22.5" pathLength="100"/></svg>' +
+      '<svg class="to-top__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>' +
+    "</button>");
+  var toTop = document.getElementById("to-top");
+  var ring = toTop.querySelector(".to-top__progress");
+  var ticking = false;
+  function updateTop() {
+    ticking = false;
+    var y = window.scrollY, max = document.documentElement.scrollHeight - window.innerHeight;
+    var on = y > window.innerHeight * 0.8;
+    toTop.classList.toggle("is-visible", on);
+    toTop.tabIndex = on ? 0 : -1;
+    ring.style.strokeDashoffset = String(100 - (max > 0 ? Math.min(100, y / max * 100) : 0));
+  }
+  window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(updateTop); } }, { passive: true });
+  window.addEventListener("resize", updateTop);
+  updateTop();
+  toTop.addEventListener("click", function () {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    // keyboard users land at the top of the page, not on a now-hidden button
+    var logo = document.querySelector(".header__logo");
+    if (logo) logo.focus({ preventScroll: true });
+  });
+
+  // Page-transition loader (#page-loader is in each page's markup so it covers the first paint).
+  // Shows on arrival and when following a link to another page. In-page changes (shop filters,
+  // anchors on the same page) don't use it; shop pagination calls HM.loader.flash() itself.
+  var loader = document.getElementById("page-loader");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function hideLoader() { if (loader) loader.classList.add("is-done"); }
+  function showLoader() { if (loader) { loader.classList.add("is-leaving"); loader.classList.remove("is-done"); } }
+  HM.loader = {
+    show: showLoader,
+    hide: function () { if (loader) { loader.classList.remove("is-leaving"); hideLoader(); } },
+    // cover the page, run fn while hidden, then lift (used for in-page "page" changes)
+    flash: function (fn) {
+      if (!loader || reduce) { fn(); return; }
+      showLoader();
+      setTimeout(function () { fn(); setTimeout(HM.loader.hide, 150); }, 350);
+    }
+  };
+  if (loader) {
+    loader.style.animation = "none"; // JS is running: drop the CSS failsafe
+    // lift once the page has loaded (min ~250ms so the animation reads; max 2s for slow images)
+    var t0 = Date.now(), lifted = false;
+    var lift = function () {
+      if (lifted) return; lifted = true;
+      setTimeout(hideLoader, Math.max(0, 250 - (Date.now() - t0)));
+    };
+    if (document.readyState === "complete") lift(); else window.addEventListener("load", lift);
+    setTimeout(lift, 2000);
+    // back/forward cache restores the page with the loader still down
+    window.addEventListener("pageshow", function (e) { if (e.persisted) HM.loader.hide(); });
+
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest("a[href]");
+      if (!a || a.target && a.target !== "_self" || a.hasAttribute("download")) return;
+      var url = new URL(a.href, location.href);
+      if (!/^(https?|file):$/.test(url.protocol) || url.origin !== location.origin) return;
+      // same document (only the hash differs): let the browser scroll, no loader
+      if (url.pathname === location.pathname && url.search === location.search) return;
+      e.preventDefault();
+      showLoader();
+      setTimeout(function () { location.href = url.href; }, reduce ? 0 : 300);
+    });
+  }
 })();

@@ -302,15 +302,25 @@ ul { padding: 0; list-style: none; }
 
 /* Sub-page hero */
 .page-hero { position: relative; isolation: isolate; overflow: hidden; height: 62vh; min-height: 420px; max-height: 680px; display: flex; align-items: flex-end; color: var(--white); }
-.page-hero > img { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .page-hero:hover > img { transform: scale(1.05); }
-}
-.page-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.55)); }
-.page-hero .container { padding-bottom: 72px; }
-.page-hero .eyebrow { color: rgba(255,255,255,.85); }
+/* the photo drifts slowly like video footage (Ken Burns keyframes kb-* are defined with collections.html) */
+.page-hero > img { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; transform-origin: center; will-change: transform; animation: kb-a 24s ease-in-out infinite alternate; }
+/* readability: dark espresso wash at the bottom and on the left, where the text sits */
+.page-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(180deg, rgba(23,17,13,.3) 0%, rgba(23,17,13,.05) 25%, rgba(23,17,13,.4) 55%, rgba(23,17,13,.9) 100%),
+  linear-gradient(90deg, rgba(23,17,13,.7) 0%, rgba(23,17,13,.35) 45%, rgba(23,17,13,0) 72%); }
+.page-hero .container { padding-bottom: 72px; text-shadow: 0 1px 2px rgba(0,0,0,.35), 0 4px 32px rgba(0,0,0,.45); }
+.page-hero .eyebrow { display: inline-flex; align-items: center; gap: 14px; color: var(--white); }
+.page-hero .eyebrow::before { content: ""; width: 32px; height: 1px; background: currentColor; }
 .page-hero .h1 { margin-top: 16px; max-width: 820px; }
-.page-hero p { margin-top: 16px; max-width: 560px; color: rgba(255,255,255,.85); }
+.page-hero p { margin-top: 18px; max-width: 560px; font-size: 17px; line-height: 1.7; color: rgba(255,255,255,.95); }
+/* the text rises in after the loader lifts */
+.page-hero .container > * { animation: hero-text-in 1s .5s var(--ease-out) both; }
+.page-hero .container > :nth-child(2) { animation-delay: .62s; }
+.page-hero .container > :nth-child(3) { animation-delay: .74s; }
+@keyframes hero-text-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .page-hero > img, .page-hero .container > * { animation: none; }
+}
 
 /* Plain page header (no image) */
 .page-head { padding-block: 80px 48px; }
@@ -349,7 +359,7 @@ ul { padding: 0; list-style: none; }
 
 /* Statistic strip */
 .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
-.facts strong { display: block; font-family: var(--font-serif); font-size: clamp(40px, 4vw, 60px); font-weight: 500; line-height: 1; }
+.facts strong { display: block; font-family: var(--font-serif); font-size: clamp(40px, 4vw, 60px); font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums lining-nums; }
 .facts span { display: block; margin-top: 12px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 
 /* Image tile with caption (collections, concepts) */
@@ -1082,21 +1092,32 @@ font[style] { background: none !important; box-shadow: none !important; }
 }
 .cat-grid__cell svg { flex: none; color: var(--brand); transition: color .25s, transform .25s; }
 .cat-grid__name { margin-top: auto; padding-top: 40px; font-size: 17px; font-weight: 500; }
+.cat-grid__desc { margin-top: 6px; font-size: 13px; line-height: 1.55; color: var(--muted); transition: color .25s; }
 .cat-grid__count { margin-top: 4px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); transition: color .25s; }
 .cat-grid__cell:hover { background: var(--sand); }
 .cat-grid__cell:hover svg { transform: translateY(-2px); }
 .cat-grid__cell--all { grid-column: span 2; background: var(--brand); color: var(--white); }
-.cat-grid__cell--all svg, .cat-grid__cell--all .cat-grid__count { color: rgba(255,255,255,.75); }
+.cat-grid__cell--all svg, .cat-grid__cell--all .cat-grid__count, .cat-grid__cell--all .cat-grid__desc { color: rgba(255,255,255,.75); }
 .cat-grid__cell--all:hover { background: var(--brand-dark); }
+/* index.html: 8 categories, 4 per row, no "all products" cell */
+.cat-grid--home { grid-template-columns: repeat(4, 1fr); }
+.cat-grid--home .cat-grid__name { margin-top: 0; padding-top: 20px; }
+@media (max-width: 900px) {
+  .cat-grid--home { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .cat-grid--home .cat-grid__name { padding-top: 14px; }
+}
 @media (max-width: 1100px) {
   .home-cat-head { flex-direction: column; align-items: flex-start; }
-  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .cat-grid:not(.cat-grid--home) { grid-template-columns: repeat(3, 1fr); }
   .cat-grid__cell--all { grid-column: span 1; }
 }
 @media (max-width: 720px) {
-  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .cat-grid:not(.cat-grid--home) { grid-template-columns: repeat(2, 1fr); }
   .cat-grid__cell { min-height: 140px; padding: 20px 16px; }
   .cat-grid__name { padding-top: 28px; font-size: 15px; }
+  .cat-grid__desc { font-size: 12px; }
   .cat-grid__cell--all { grid-column: span 2; }
 }
 
@@ -1120,7 +1141,7 @@ font[style] { background: none !important; box-shadow: none !important; }
 .home-hero__slide > img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 7s ease-out; }
 .home-hero__slide.is-active > img { transform: scale(1); }
 .home-hero__slide::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(23,17,13,.55), rgba(23,17,13,.45) 50%, rgba(23,17,13,.7)); }
-.home-hero__content { position: relative; z-index: 2; max-width: 1040px; padding: 0 24px; text-wrap: balance; }
+.home-hero__content { position: relative; z-index: 2; max-width: 1040px; padding: 0 24px; text-wrap: balance; text-shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 32px rgba(0,0,0,.4); }
 .home-hero__content .eyebrow { color: rgba(255,255,255,.85); }
 .home-hero__content h1, .home-hero__content h2 { margin-top: 18px; font-size: clamp(38px, 4.6vw, 64px); font-weight: 500; line-height: 1.15; letter-spacing: -.02em; }
 .home-hero__content p { max-width: 560px; margin: 22px auto 0; color: rgba(255,255,255,.82); }
@@ -1451,10 +1472,10 @@ button.collection__media:hover .zoom-hint, button.collection__media:focus-visibl
 @media (hover: none) { .zoom-hint { opacity: 1; transform: none; } }
 
 /* page hero whose photo has its subject in the centre (contact.html): keep the copy to the left of it */
-.page-hero--left::after { background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.45)), linear-gradient(90deg, rgba(23,17,13,.6), rgba(23,17,13,.2) 50%, transparent 70%); }
+.page-hero--left::after { background: linear-gradient(180deg, rgba(23,17,13,.25) 0%, rgba(23,17,13,.05) 30%, rgba(23,17,13,.85) 100%), linear-gradient(90deg, rgba(23,17,13,.85), rgba(23,17,13,.4) 50%, transparent 74%); }
 @media (max-width: 720px) {
   .page-hero--left > img { object-position: 18% center; }
-  .page-hero--left::after { background: linear-gradient(180deg, rgba(23,17,13,.15) 20%, rgba(23,17,13,.7)); }
+  .page-hero--left::after { background: linear-gradient(180deg, rgba(23,17,13,.3) 0%, rgba(23,17,13,.2) 30%, rgba(23,17,13,.9) 100%); }
 }
 .page-hero--left .h1 { max-width: 600px; }
 
@@ -1494,3 +1515,271 @@ button.collection__media:hover .zoom-hint, button.collection__media:focus-visibl
 .cat-row__icon .cat-icon { width: 36px; height: 36px; }
 .cat-full .cat-row__icon { border-color: rgba(255, 255, 255, .45); color: var(--white); }
 @media (max-width: 720px) { .cat-row__icon { width: 60px; height: 60px; } .cat-row__icon .cat-icon { width: 28px; height: 28px; } }
+
+/* 404.html: text left, framed photo with large "404" numerals right */
+.nf { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 80px; max-width: var(--page-max); min-height: calc(100vh - var(--header-h)); margin: 0 auto; padding: 96px var(--gutter); }
+.nf__text .h1 { margin-top: 18px; }
+.nf__text .lead { margin-top: 24px; max-width: 520px; }
+.nf__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+.nf__links { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line); }
+.nf__links-title { display: block; margin-bottom: 18px; font-size: 13px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.nf__links ul { display: flex; flex-wrap: wrap; gap: 10px; }
+.nf__links a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px; border: 1px solid var(--line); border-radius: 40px; font-size: 14px; transition: border-color .25s, background-color .25s, color .25s; }
+.nf__links a svg { flex: none; color: var(--brand); transition: color .25s; }
+.nf__links a:hover { border-color: var(--brand); background: var(--brand); color: var(--white); }
+.nf__links a:hover svg { color: var(--white); }
+.nf__help { margin-top: 32px; font-size: 14px; color: var(--muted); }
+.nf__help a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+.nf__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--sand); }
+.nf__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
+.nf__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(23,17,13,0) 40%, rgba(23,17,13,.6)); }
+.nf__num { position: absolute; left: 32px; bottom: 8px; z-index: 1; font-size: clamp(120px, 14vw, 220px); font-weight: 500; line-height: 1; letter-spacing: -.04em; color: var(--white); font-variant-numeric: lining-nums; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .nf__media:hover img { transform: scale(1.05); }
+}
+@media (max-width: 1100px) {
+  .nf { gap: 48px; }
+}
+@media (max-width: 900px) {
+  .nf { grid-template-columns: 1fr; min-height: 0; padding-block: 56px 80px; }
+  .nf__media { order: -1; aspect-ratio: 16 / 10; }
+  .nf__num { left: 20px; font-size: clamp(96px, 24vw, 160px); }
+}
+
+/* Page-transition loader (markup at the top of <body>, behaviour in js/layout.js).
+   Arrival: the cream curtain lifts up. Leaving: it drops back down, then the browser navigates.
+   Failsafe: if JS never runs, the curtain lifts by itself after 4s. */
+.page-loader { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; background: var(--cream); transition: transform .6s cubic-bezier(.76,0,.24,1), visibility 0s; animation: loader-failsafe .8s 4s cubic-bezier(.76,0,.24,1) forwards; }
+.page-loader.is-done { transform: translateY(-100%); visibility: hidden; transition: transform .6s cubic-bezier(.76,0,.24,1), visibility 0s .6s; }
+.page-loader.is-leaving { transition-duration: .35s; }
+.page-loader__inner { display: grid; justify-items: center; gap: 28px; transition: opacity .3s, transform .5s; }
+.page-loader.is-done .page-loader__inner { opacity: 0; transform: translateY(-24px); }
+.page-loader__logo { animation: loader-breathe 1.8s ease-in-out infinite; }
+.page-loader__bar { position: relative; width: 140px; height: 1px; overflow: hidden; background: var(--line); }
+.page-loader__bar::after { content: ""; position: absolute; inset: 0; background: var(--brand); transform-origin: left; animation: loader-bar 1.4s cubic-bezier(.65,0,.35,1) infinite; }
+@keyframes loader-bar {
+  0% { transform: translateX(-100%) scaleX(.4); }
+  50% { transform: translateX(0) scaleX(.6); }
+  100% { transform: translateX(100%) scaleX(.4); }
+}
+@keyframes loader-breathe { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+@keyframes loader-failsafe { to { transform: translateY(-100%); visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) {
+  .page-loader__logo, .page-loader__bar::after { animation: none; }
+  .page-loader__bar::after { transform: none; }
+}
+
+/* "Vì sao chọn Hamamoto" (index.html + about.html): dark band, tabs left, photo + specs right */
+.why-section { background: var(--espresso); color: var(--white); }
+.why-section .eyebrow { color: var(--brand-light); }
+/* head uses .section-head (same spacing/type as the other home sections), recoloured for the dark band */
+.why-head p { max-width: 470px; line-height: 1.75; color: rgba(255,255,255,.66); }
+.why { display: grid; grid-template-columns: minmax(240px, 4fr) 8fr; gap: 72px; align-items: start; }
+.why__tabs { display: flex; flex-direction: column; border-top: 1px solid rgba(255,255,255,.14); }
+.why__tab { display: flex; align-items: baseline; gap: 20px; width: 100%; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,.14); text-align: left; font: inherit; font-size: 20px; font-weight: 500; line-height: 1.3; letter-spacing: -.01em; color: rgba(255,255,255,.45); cursor: pointer; transition: color .3s, padding-left .4s var(--ease-out); }
+.why__num { flex: none; font-size: 12px; letter-spacing: .1em; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.4); transition: color .3s; }
+.why__tab:hover { color: rgba(255,255,255,.8); }
+.why__tab[aria-selected="true"] { color: var(--white); padding-left: 8px; }
+.why__tab[aria-selected="true"] .why__num { color: var(--brand-light); }
+.why__tab:focus-visible { outline: 2px solid var(--brand-light); outline-offset: 4px; }
+.why__panel.is-active { animation: why-in .6s var(--ease-out); }
+@keyframes why-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.why__media { position: relative; aspect-ratio: 16 / 7; overflow: hidden; margin: 0; background: #241a13; }
+.why__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease-out); }
+.why__panel.is-active .why__media img { animation: why-zoom 1.4s var(--ease-out); }
+@keyframes why-zoom { from { transform: scale(1.06); } to { transform: none; } }
+.why__caption { position: absolute; left: 16px; bottom: 16px; padding: 8px 14px; background: rgba(23,17,13,.72); backdrop-filter: blur(6px); font-size: 12px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.9); }
+.why__body { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 40px; }
+.why__body p { margin-top: 16px; line-height: 1.75; color: rgba(255,255,255,.66); }
+.why__specs { margin: 0; border-top: 1px solid rgba(255,255,255,.14); }
+.why__specs div { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.14); }
+.why__specs dt { padding-top: 3px; font-size: 12px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+.why__specs dd { margin: 0; font-size: 16px; line-height: 1.6; color: var(--white); }
+@media (max-width: 1100px) {
+  .why { grid-template-columns: 1fr; gap: 40px; }
+  /* tabs become a horizontal scroll row */
+  .why__tabs { flex-direction: row; overflow-x: auto; gap: 8px; border: 0; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
+  .why__tabs::-webkit-scrollbar { display: none; }
+  .why__tab { flex: none; width: auto; align-items: center; gap: 10px; padding: 10px 18px; border: 1px solid rgba(255,255,255,.2); border-radius: 40px; font-size: 15px; font-weight: 500; }
+  .why__tab[aria-selected="true"] { padding-left: 18px; background: var(--white); border-color: var(--white); color: var(--ink); }
+  .why__tab[aria-selected="true"] .why__num { color: var(--brand); }
+  .why__num { font-size: 11px; }
+}
+@media (max-width: 900px) {
+  .why-head { flex-direction: column; align-items: flex-start; }
+  .why__body { grid-template-columns: 1fr; gap: 28px; margin-top: 28px; }
+  .why__media { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 720px) {
+  .why__specs div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .why__panel.is-active, .why__panel.is-active .why__media img { animation: none; }
+}
+
+/* collections.html: slow "Ken Burns" drift on each collection photo so it reads like video footage.
+   Each collection gets its own pan direction; the loop runs forwards then backwards (alternate),
+   so there's never a jump. Replaces the hover zoom on these images. */
+.collection__media img { transform-origin: center; will-change: transform; animation: kb-a 22s ease-in-out infinite alternate; }
+.collection:nth-of-type(4n+2) .collection__media img { animation-name: kb-b; animation-duration: 24s; }
+.collection:nth-of-type(4n+3) .collection__media img { animation-name: kb-c; animation-duration: 20s; }
+.collection:nth-of-type(4n+4) .collection__media img { animation-name: kb-d; animation-duration: 26s; }
+@keyframes kb-a { from { transform: scale(1.04) translate(-1.5%, 1%); } to { transform: scale(1.16) translate(2%, -1.5%); } }
+@keyframes kb-b { from { transform: scale(1.15) translate(2%, 1.5%); } to { transform: scale(1.06) translate(-2%, -1%); } }
+@keyframes kb-c { from { transform: scale(1.05) translate(1.5%, -2%); } to { transform: scale(1.14) translate(-1.5%, 2%); } }
+@keyframes kb-d { from { transform: scale(1.12) translate(-2%, -1.5%); } to { transform: scale(1.05) translate(1.5%, 1.5%); } }
+@media (prefers-reduced-motion: reduce) {
+  .collection__media img { animation: none; }
+}
+
+/* collections.html: on scroll, each .collection's photo and text slide in from opposite sides
+   (photo from its own side, text from the other; swapped on even rows). The block itself is the
+   [data-reveal] trigger, so it stays put and only its two halves move. */
+body[data-page="collections"] main { overflow-x: clip; } /* no sideways scrollbar while halves are off to the side */
+.js-reveal .collection[data-reveal] { opacity: 1; transform: none; }
+.js-reveal .collection[data-reveal] > .collection__media,
+.js-reveal .collection[data-reveal] > .collection__text {
+  opacity: 0;
+  transition: opacity 1.1s var(--ease-out), transform 1.2s var(--ease-out);
+}
+.js-reveal .collection[data-reveal] > .collection__media { transform: translateX(-80px); }
+.js-reveal .collection[data-reveal] > .collection__text { transform: translateX(80px); transition-delay: .18s; }
+.js-reveal .collection[data-reveal]:nth-of-type(even) > .collection__media { transform: translateX(80px); }
+.js-reveal .collection[data-reveal]:nth-of-type(even) > .collection__text { transform: translateX(-80px); }
+@media (max-width: 1100px) {
+  /* stacked layout: photo from the left, text from the right, shorter distance */
+  .js-reveal .collection[data-reveal] > .collection__media,
+  .js-reveal .collection[data-reveal]:nth-of-type(even) > .collection__media { transform: translateX(-40px); }
+  .js-reveal .collection[data-reveal] > .collection__text,
+  .js-reveal .collection[data-reveal]:nth-of-type(even) > .collection__text { transform: translateX(40px); }
+}
+/* last, so the revealed state wins over every start offset above */
+.js-reveal .collection[data-reveal].is-visible > .collection__media,
+.js-reveal .collection[data-reveal].is-visible > .collection__text { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .collection[data-reveal] > * { opacity: 1 !important; transform: none !important; }
+}
+
+/* index.html: photos in every .tile (Collections + Living Concepts) drift slowly like video,
+   reusing the collections.html Ken Burns keyframes; neighbouring tiles move differently. */
+body[data-page="home"] .tile img { transform-origin: center; will-change: transform; animation: kb-a 22s ease-in-out infinite alternate; }
+body[data-page="home"] .tile:nth-child(4n+2) img { animation-name: kb-b; animation-duration: 24s; }
+body[data-page="home"] .tile:nth-child(4n+3) img { animation-name: kb-c; animation-duration: 20s; }
+body[data-page="home"] .tile:nth-child(4n+4) img { animation-name: kb-d; animation-duration: 26s; }
+body[data-page="home"] .lc-block__right .tile img { animation-name: kb-c; animation-duration: 20s; }
+/* index.html Collections: the 4 tiles appear one by one when the section scrolls into view */
+.js-reveal .col-grid[data-reveal-stagger] > .tile {
+  transform: translateY(40px) scale(.97);
+  transition: opacity 1.1s var(--ease-out), transform 1.2s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 220ms);
+}
+.js-reveal .col-grid[data-reveal-stagger].is-visible > .tile { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="home"] .tile img { animation: none; }
+}
+
+/* living-concepts.html: slide-in on scroll. Each .concept is the [data-reveal] trigger and stays put;
+   heading slides from the left, intro text from the right, the scene photo from alternating sides,
+   then the product list comes in item by item. */
+body[data-page="concepts"] main { overflow-x: clip; }
+.js-reveal .concept[data-reveal] { opacity: 1; transform: none; }
+.js-reveal .concept[data-reveal] .concept__head > *,
+.js-reveal .concept[data-reveal] .concept__scene,
+.js-reveal .concept[data-reveal] .concept__item {
+  opacity: 0;
+  transition: opacity 1s var(--ease-out), transform 1.1s var(--ease-out);
+}
+.js-reveal .concept[data-reveal] .concept__head > :first-child { transform: translateX(-64px); }
+.js-reveal .concept[data-reveal] .concept__head > p { transform: translateX(64px); transition-delay: .1s; }
+.js-reveal .concept[data-reveal] .concept__scene { transform: translateX(96px); transition-duration: 1.2s, 1.3s; transition-delay: .2s; }
+.js-reveal .concept[data-reveal]:nth-child(even) .concept__scene { transform: translateX(-96px); }
+.js-reveal .concept[data-reveal] .concept__item { transform: translateX(-40px); transition-delay: calc(.5s + var(--i, 0) * 110ms); }
+@media (max-width: 720px) {
+  .js-reveal .concept[data-reveal] .concept__head > :first-child,
+  .js-reveal .concept[data-reveal] .concept__item { transform: translateX(-32px); }
+  .js-reveal .concept[data-reveal] .concept__head > p,
+  .js-reveal .concept[data-reveal] .concept__scene,
+  .js-reveal .concept[data-reveal]:nth-child(even) .concept__scene { transform: translateX(32px); }
+}
+/* last, so the revealed state beats every start offset above */
+.js-reveal .concept[data-reveal].is-visible .concept__head > *,
+.js-reveal .concept[data-reveal].is-visible .concept__scene,
+.js-reveal .concept[data-reveal].is-visible .concept__item { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .concept[data-reveal] * { opacity: 1 !important; transform: none !important; }
+}
+
+/* index.html + about.html "Vì sao nên chọn Hamamoto": on scroll the 5 tabs slide in from the left one
+   after another, then the photo/specs panel slides in from the right. Keyframe animations (not
+   transitions) so the per-tab delays don't linger on the tabs' own hover/selected transitions. */
+.js-reveal .why[data-reveal] { opacity: 1; transform: none; }
+.js-reveal .why[data-reveal] .why__tab,
+.js-reveal .why[data-reveal] .why__panels { opacity: 0; }
+.js-reveal .why[data-reveal].is-visible .why__tab { animation: slide-from-left .9s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 120ms); }
+.js-reveal .why[data-reveal].is-visible .why__panels { animation: slide-from-right 1.1s .25s var(--ease-out) both; }
+@media (max-width: 1100px) {
+  /* tabs are a horizontal pill row here: shorter slide */
+  .js-reveal .why[data-reveal].is-visible .why__tab { animation-name: slide-from-left-sm; }
+}
+
+/* index.html Living Concepts: big tile slides in from the left, the right tile from the right,
+   then the m² band links come up one by one. */
+.js-reveal .lc-block[data-reveal] { opacity: 1; transform: none; }
+.js-reveal .lc-block[data-reveal] > .tile,
+.js-reveal .lc-block[data-reveal] .lc-block__right > .tile,
+.js-reveal .lc-block[data-reveal] .lc-band > a { opacity: 0; }
+.js-reveal .lc-block[data-reveal].is-visible > .tile { animation: slide-from-left 1.2s var(--ease-out) both; }
+.js-reveal .lc-block[data-reveal].is-visible .lc-block__right > .tile { animation: slide-from-right 1.2s .15s var(--ease-out) both; }
+.js-reveal .lc-block[data-reveal].is-visible .lc-band > a { animation: rise-in .8s var(--ease-out) both; animation-delay: calc(.45s + var(--i, 0) * 120ms); }
+
+@keyframes slide-from-left { from { opacity: 0; transform: translateX(-72px); } to { opacity: 1; transform: none; } }
+@keyframes slide-from-left-sm { from { opacity: 0; transform: translateX(-32px); } to { opacity: 1; transform: none; } }
+@keyframes slide-from-right { from { opacity: 0; transform: translateX(72px); } to { opacity: 1; transform: none; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+body[data-page="home"] main, body[data-page="brand"] main { overflow-x: clip; }
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .why[data-reveal] *, .js-reveal .lc-block[data-reveal] * { opacity: 1 !important; animation: none !important; }
+}
+
+/* Back-to-top button (js/layout.js): stacked above the contact button, ring = scroll progress */
+.to-top { position: fixed; right: 30px; bottom: 96px; z-index: 59; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--white); color: var(--brand); box-shadow: 0 8px 24px -10px rgba(0,0,0,.35); opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .3s, transform .3s var(--ease-out), visibility 0s .3s, background-color .2s, color .2s; }
+.to-top.is-visible { opacity: 1; visibility: visible; transform: none; transition: opacity .3s, transform .3s var(--ease-out), visibility 0s, background-color .2s, color .2s; }
+.to-top:hover { background: var(--brand); color: var(--white); }
+.to-top:hover .to-top__arrow { transform: translateY(-2px); }
+.to-top__ring { position: absolute; inset: 0; transform: rotate(-90deg); fill: none; stroke-width: 1.5; }
+.to-top__ring circle:first-child { stroke: var(--line); }
+.to-top__progress { stroke: currentColor; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset .1s linear; }
+.to-top:hover .to-top__ring circle:first-child { stroke: transparent; }
+.to-top__arrow { position: relative; transition: transform .25s var(--ease-out); }
+/* out of the way while the contact menu is open */
+.fab.is-open + .to-top { opacity: 0; visibility: hidden; }
+@media (max-width: 720px) {
+  .to-top { right: 19px; bottom: 82px; }
+}
+
+/* index.html + shop.html category grid: when it scrolls into view the cells appear one by one in
+   reading order (left → right, then the next row). The grid frame stays; only the cells move.
+   Keyframe animation, so the stagger delay doesn't slow the cells' own hover transitions. */
+.js-reveal .cat-grid[data-reveal] { opacity: 1; transform: none; }
+.js-reveal .cat-grid[data-reveal] > .cat-grid__cell { opacity: 0; }
+.js-reveal .cat-grid[data-reveal].is-visible > .cat-grid__cell { animation: cell-in .7s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.cat-grid > :nth-child(2) { --i: 1; }
+.cat-grid > :nth-child(3) { --i: 2; }
+.cat-grid > :nth-child(4) { --i: 3; }
+.cat-grid > :nth-child(5) { --i: 4; }
+.cat-grid > :nth-child(6) { --i: 5; }
+.cat-grid > :nth-child(7) { --i: 6; }
+.cat-grid > :nth-child(8) { --i: 7; }
+.cat-grid > :nth-child(9) { --i: 8; }
+@keyframes cell-in { from { opacity: 0; transform: translate(-20px, -12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal .cat-grid[data-reveal] > .cat-grid__cell { opacity: 1 !important; animation: none !important; }
+}
+
+/* Forms: Turnstile widget, honeypot, sending / error states (js/main.js) */
+.form-turnstile { min-height: 65px; margin-top: 28px; }
+.form-turnstile.has-error iframe { outline: 2px solid var(--danger); outline-offset: 2px; }
+.form-turnstile + .form-actions { margin-top: 20px; }
+.hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+form.is-sending [type="submit"] { opacity: .7; cursor: progress; }
+.form-status--error { border-left-color: var(--danger); color: var(--danger); }

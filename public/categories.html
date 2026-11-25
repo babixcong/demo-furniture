@@ -16,6 +16,13 @@
   <script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js-reveal");</script>
 </head>
 <body data-page="categories">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
   <header id="site-header"></header>
 
   <main>

@@ -15,6 +15,13 @@
   <script>if ("IntersectionObserver" in window) document.documentElement.classList.add("js-reveal");</script>
 </head>
 <body data-page="home">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
   <header id="site-header"></header>
 
   <main>
@@ -61,6 +68,20 @@
       </div>
     </section>
 
+    <!-- 2b. Vì sao chọn Hamamoto: 5 tabs rendered from HM.why by js/main.js -->
+    <section class="section why-section" id="vi-sao" aria-labelledby="why-title">
+      <div class="container">
+        <div class="section-head why-head" data-reveal>
+          <div>
+            <span class="eyebrow">Năm điều làm nên khác biệt</span>
+            <h2 class="h2" id="why-title">Vì sao nên chọn Hamamoto?</h2>
+          </div>
+          <p>Từ chọn gỗ, nơi sản xuất, thiết kế, kỹ thuật đến kiểm định an toàn, điều nào cũng có con số cụ thể theo công bố của nhà sản xuất.</p>
+        </div>
+        <div class="why" data-why data-reveal></div>
+      </div>
+    </section>
+
     <!-- 3. Nhóm hàng (layout from idea/products-rec.png) -->
     <section class="section section--cream" aria-labelledby="cat-title">
       <div class="container">
@@ -74,7 +95,7 @@
             <a class="link-arrow" href="shop.html">Vào cửa hàng <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           </div>
         </div>
-        <nav class="cat-grid" id="cat-grid" aria-label="Nhóm hàng" data-reveal></nav>
+        <nav class="cat-grid cat-grid--home" id="cat-grid" aria-label="Nhóm hàng" data-reveal></nav>
       </div>
     </section>
 
@@ -91,7 +112,7 @@
             <span class="btn-arrow__icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           </a>
         </div>
-        <div class="col-grid" id="col-grid" data-reveal></div>
+        <div class="col-grid" id="col-grid" data-reveal-stagger></div>
       </div>
     </section>
 
@@ -156,18 +177,17 @@
 
       // 3. Category grid: one cell per HM.categories entry + "all products"
       var svg = function (k) { return HM.catIcon(k, 26); };
-      var cell = function (href, icon, name, n, extra) {
-        return '<a class="cat-grid__cell' + (extra || "") + '" href="' + href + '">' + svg(icon) +
-          '<span class="cat-grid__name">' + name + '</span><span class="cat-grid__count">' + n + " mẫu</span></a>";
+      var cell = function (href, icon, name, desc) {
+        return '<a class="cat-grid__cell" href="' + href + '">' + svg(icon) +
+          '<span class="cat-grid__name">' + name + '</span><span class="cat-grid__desc">' + desc + "</span></a>";
       };
       document.getElementById("cat-grid").innerHTML = HM.categories.map(function (c) {
-        var n = HM.products.filter(function (p) { return p.cat === c.id; }).length;
-        return cell("shop.html?category=" + c.id, c.id, HM.label(c), n);
-      }).join("") + cell("shop.html", "all", "Tất cả sản phẩm", HM.products.length, " cat-grid__cell--all");
+        return cell("shop.html?category=" + c.id, c.id, HM.label(c), HM.esc(c.desc));
+      }).join("");
 
       // 4. Collections masonry
-      document.getElementById("col-grid").innerHTML = HM.collections.map(function (c) {
-        return '<a class="tile" href="collections.html#' + c.id + '">' +
+      document.getElementById("col-grid").innerHTML = HM.collections.map(function (c, i) {
+        return '<a class="tile" href="collections.html#' + c.id + '" style="--i:' + i + '">' +
           '<img src="' + HM.IMG + c.img + '" alt="" loading="lazy">' +
           '<div class="tile__caption"><span class="eyebrow">' + HM.esc(c.material) + "</span>" +
           '<h3 class="h3">' + HM.nt(c.no) + "</h3><p>" + HM.label(c) + "</p></div></a>";
@@ -183,8 +203,8 @@
       var areas = HM.concepts.filter(function (c) { return /\d/.test(c.area); });
       document.getElementById("lc-block").innerHTML = tile(byId("20-30")) +
         '<div class="lc-block__right">' + tile(byId("bep-an")) +
-          '<nav class="lc-band" aria-label="Không gian theo diện tích">' + areas.map(function (c) {
-            return '<a href="living-concepts.html#' + c.id + '"><strong>' + c.area + " <small>m²</small></strong><span>" + HM.esc(c.title.split(",")[0]) + "</span></a>";
+          '<nav class="lc-band" aria-label="Không gian theo diện tích">' + areas.map(function (c, i) {
+            return '<a href="living-concepts.html#' + c.id + '" style="--i:' + i + '"><strong>' + c.area + " <small>m²</small></strong><span>" + HM.esc(c.title.split(",")[0]) + "</span></a>";
           }).join("") + "</nav></div>";
 
       // Hero slider behaviour: autoplay 6s, pause on hover/focus, dots + arrows, swipe

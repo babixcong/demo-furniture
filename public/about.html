@@ -14,6 +14,13 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="brand">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
   <header id="site-header"></header>
 
   <main>
@@ -114,6 +121,20 @@
         <div><strong>3</strong><span>Thế hệ nghệ nhân</span></div>
         <div><strong>120+</strong><span>Công đoạn thủ công</span></div>
         <div><strong>10 năm</strong><span>Bảo hành khung</span></div>
+      </div>
+    </section>
+
+    <!-- Vì sao chọn Hamamoto: 5 tabs rendered from HM.why by js/main.js -->
+    <section class="section why-section" id="vi-sao" aria-labelledby="why-title">
+      <div class="container">
+        <div class="section-head why-head" data-reveal>
+          <div>
+            <span class="eyebrow">Năm điều làm nên khác biệt</span>
+            <h2 class="h2" id="why-title">Vì sao nên chọn Hamamoto?</h2>
+          </div>
+          <p>Từ chọn gỗ, nơi sản xuất, thiết kế, kỹ thuật đến kiểm định an toàn, điều nào cũng có con số cụ thể theo công bố của nhà sản xuất.</p>
+        </div>
+        <div class="why" data-why data-reveal></div>
       </div>
     </section>
 

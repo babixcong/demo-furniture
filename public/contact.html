@@ -14,6 +14,13 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="contact">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
   <header id="site-header"></header>
 
   <!-- Brief 2: the Showroom page is merged here (showroom.html now redirects to #showroom) -->
@@ -69,7 +76,7 @@
           <h2 class="h1" id="booking-t" style="margin-top:12px">Hẹn gặp tại showroom</h2>
           <p class="lead" style="margin-top:20px">Chuyên viên sẽ chuẩn bị sẵn mẫu vật liệu và sản phẩm bạn quan tâm. Mỗi buổi khoảng 60 phút, hoàn toàn miễn phí. Hoặc để lại câu hỏi, chúng tôi phản hồi trong một ngày làm việc.</p>
         </div>
-        <form class="form-card" id="contact-form" data-form data-success="Cảm ơn bạn! Chúng tôi đã nhận yêu cầu và sẽ liên hệ lại trong vòng 24 giờ.">
+        <form class="form-card" id="contact-form" data-form="contact" data-success="Cảm ơn bạn! Chúng tôi đã nhận yêu cầu và sẽ liên hệ lại trong vòng 24 giờ.">
           <div class="form-grid" style="margin-top:0">
             <div class="field field--full" id="tu-van">
               <span class="label">Bạn cần</span>
@@ -92,10 +99,10 @@
             <div class="field field--full booking-only">
               <span class="label">Không gian quan tâm</span>
               <div class="choice-row">
-                <label><input type="checkbox" name="interest" value="phong-khach"><span>Phòng khách</span></label>
-                <label><input type="checkbox" name="interest" value="phong-an"><span>Bếp – ăn</span></label>
-                <label><input type="checkbox" name="interest" value="phong-ngu"><span>Phòng ngủ</span></label>
-                <label><input type="checkbox" name="interest" value="tron-goi"><span>Trọn bộ căn hộ</span></label>
+                <label><input type="checkbox" name="interest" value="Phòng khách"><span>Phòng khách</span></label>
+                <label><input type="checkbox" name="interest" value="Bếp – ăn"><span>Bếp – ăn</span></label>
+                <label><input type="checkbox" name="interest" value="Phòng ngủ"><span>Phòng ngủ</span></label>
+                <label><input type="checkbox" name="interest" value="Trọn bộ căn hộ"><span>Trọn bộ căn hộ</span></label>
               </div>
             </div>
 

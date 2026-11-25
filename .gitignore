@@ -1,3 +1,6 @@
 /.idea
 hamamoto-website-brief.md
 idea
+.wrangler/
+node_modules/
+.dev.vars

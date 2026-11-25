@@ -14,6 +14,13 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="professionals">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
   <header id="site-header"></header>
 
   <main>
@@ -61,15 +68,15 @@
           <h2 class="h1" id="reg-t" style="margin-top:12px">Đăng ký hợp tác</h2>
           <p class="lead" style="margin-top:20px">Để lại thông tin, đội ngũ dự án sẽ gửi catalogue, bảng giá đối tác và liên hệ trong 2 ngày làm việc.</p>
         </div>
-        <form class="form-card" data-form data-success="Cảm ơn! Hồ sơ của bạn đã được ghi nhận. Catalogue sẽ được gửi qua email." style="background:var(--white)">
+        <form class="form-card" data-form="partner" data-success="Cảm ơn! Hồ sơ của bạn đã được ghi nhận. Catalogue sẽ được gửi qua email." style="background:var(--white)">
           <div class="form-grid" style="margin-top:0">
             <div class="field field--full">
               <span class="label">Bạn là <span class="req">*</span></span>
               <div class="choice-row">
-                <label><input type="radio" name="role" value="kien-truc-su" required><span>Kiến trúc sư</span></label>
-                <label><input type="radio" name="role" value="thiet-ke"><span>Nhà thiết kế nội thất</span></label>
-                <label><input type="radio" name="role" value="nha-thau"><span>Nhà thầu</span></label>
-                <label><input type="radio" name="role" value="chu-dau-tu"><span>Chủ đầu tư</span></label>
+                <label><input type="radio" name="role" value="Kiến trúc sư" required><span>Kiến trúc sư</span></label>
+                <label><input type="radio" name="role" value="Nhà thiết kế nội thất"><span>Nhà thiết kế nội thất</span></label>
+                <label><input type="radio" name="role" value="Nhà thầu"><span>Nhà thầu</span></label>
+                <label><input type="radio" name="role" value="Chủ đầu tư"><span>Chủ đầu tư</span></label>
               </div>
             </div>
             <div class="field"><label for="r-name">Họ và tên <span class="req">*</span></label><input id="r-name" name="name" autocomplete="name" required><p class="field__error"></p></div>

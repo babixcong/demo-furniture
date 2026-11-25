@@ -14,6 +14,13 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-page="products">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
   <header id="site-header"></header>
 
   <main>
@@ -30,7 +37,7 @@
     <div class="container shop-head">
       <ol class="breadcrumb" id="crumbs"><li><a href="index.html">Trang chủ</a></li><li><a href="categories.html">Sản phẩm</a></li></ol>
       <!-- Nhóm hàng: same grid as the home page, used here as the category filter -->
-      <nav class="cat-grid cat-grid--filter" id="shop-cats" aria-label="Lọc theo nhóm hàng"></nav>
+      <nav class="cat-grid cat-grid--filter" id="shop-cats" aria-label="Lọc theo nhóm hàng" data-reveal></nav>
     </div>
 
     <div class="container">

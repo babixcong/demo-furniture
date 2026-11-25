@@ -121,18 +121,22 @@
     });
   });
 
-  // ---------- Forms: validation + confirmation (no backend yet) ----------
+  // ---------- Forms: validation, Turnstile, submit to Google Sheets ----------
   var MSG = {
     valueMissing: "Vui lòng điền thông tin này.",
     typeMismatch: "Định dạng chưa đúng.",
     patternMismatch: "Định dạng chưa đúng.",
     tooShort: "Nội dung quá ngắn."
   };
+  // Same rule as worker/index.js: Vietnamese numbers starting 0, 84 or +84
+  var VN_PHONE = /^(?:\+84|84|0)(?:[35789]\d{8}|2\d{9})$/;
   function check(input) {
     var field = input.closest(".field") || input.closest(".check");
     if (!field) return true;
     var v = input.validity, msg = "";
-    if (!v.valid) {
+    if (v.valid && input.type === "tel" && input.value.trim() && !VN_PHONE.test(input.value.replace(/[\s.()-]/g, ""))) {
+      msg = "Số điện thoại chưa đúng (VD: 0912 345 678).";
+    } else if (!v.valid) {
       msg = v.valueMissing ? MSG.valueMissing : v.typeMismatch ? (input.type === "email" ? "Email chưa đúng định dạng." : MSG.typeMismatch)
         : v.patternMismatch ? (input.type === "tel" ? "Số điện thoại chưa đúng." : MSG.patternMismatch)
         : v.tooShort ? MSG.tooShort : MSG.typeMismatch;
@@ -143,19 +147,141 @@
     return !msg;
   }
 
-  document.querySelectorAll("form[data-form]").forEach(function (form) {
+  // Submit: validate → Cloudflare Turnstile token → POST JSON to the Worker at /api/<form>
+  // (booking / consult from the contact form's "purpose" radio, partner from data-form).
+  // The Worker re-validates, verifies the token and forwards the row to Google Sheets.
+  var FORMS = (HM && HM.site.forms) || {};
+  var dataForms = document.querySelectorAll("form[data-form]");
+
+  // Turnstile: load the script once, only on pages with a form; one widget per form
+  var tsReady = null;
+  function loadTurnstile() {
+    if (!FORMS.turnstileSiteKey) return Promise.resolve(null);
+    if (tsReady) return tsReady;
+    tsReady = new Promise(function (resolve) {
+      window.hmTurnstileLoaded = function () { resolve(window.turnstile); };
+      var sc = document.createElement("script");
+      sc.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=hmTurnstileLoaded";
+      sc.async = true; sc.defer = true;
+      sc.onerror = function () { resolve(null); };
+      document.head.appendChild(sc);
+    });
+    return tsReady;
+  }
+
+  function formData(form) {
+    var out = {};
+    new FormData(form).forEach(function (v, k) {
+      if (k === "cf-turnstile-response") return;
+      v = typeof v === "string" ? v.trim() : v;
+      out[k] = out[k] ? out[k] + ", " + v : v; // checkboxes with the same name → "a, b"
+    });
+    return out;
+  }
+
+  dataForms.forEach(function (form) {
     form.noValidate = true;
     var status = form.querySelector(".form-status");
+    var submitBtn = form.querySelector('[type="submit"]');
+    var actions = form.querySelector(".form-actions");
+    function say(text, kind) {
+      if (!status) return;
+      status.textContent = text;
+      status.classList.toggle("form-status--error", kind === "error");
+    }
+
+    // honeypot: real people never see or fill this field; bots that fill every input get dropped
+    form.insertAdjacentHTML("beforeend",
+      '<div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>');
+
+    // Turnstile widget, just above the submit button
+    var widgetId = null, tsBox = null;
+    if (FORMS.turnstileSiteKey && actions) {
+      tsBox = document.createElement("div");
+      tsBox.className = "form-turnstile";
+      actions.parentNode.insertBefore(tsBox, actions);
+      loadTurnstile().then(function (ts) {
+        if (!ts) { tsBox.textContent = "Không tải được bước xác minh. Vui lòng tải lại trang."; return; }
+        widgetId = ts.render(tsBox, {
+          sitekey: FORMS.turnstileSiteKey,
+          action: form.getAttribute("data-form"), // checked by the Worker (contact / partner)
+          language: "vi",
+          theme: "light",
+          callback: function () { tsBox.classList.remove("has-error"); }
+        });
+      });
+    }
+
     form.addEventListener("input", function (e) { if (e.target.closest(".has-error")) check(e.target); });
     form.addEventListener("change", function (e) { if (e.target.closest(".has-error")) check(e.target); });
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (form.classList.contains("is-sending")) return;
       var bad = null;
-      form.querySelectorAll("input, select, textarea").forEach(function (i) { if (!check(i) && !bad) bad = i; });
-      if (bad) { bad.focus(); if (status) status.textContent = ""; return; }
-      // TODO: send FormData(form) to the CRM / email service here.
-      if (status) status.textContent = form.getAttribute("data-success") || "Cảm ơn bạn! Chúng tôi sẽ liên hệ lại sớm.";
-      form.reset();
+      form.querySelectorAll("input, select, textarea").forEach(function (i) {
+        if (i.closest(".hp") || i.closest(".form-turnstile")) return;
+        if (!check(i) && !bad) bad = i;
+      });
+      if (bad) { bad.focus(); say(""); return; }
+
+      var token = "";
+      if (tsBox) {
+        token = window.turnstile && widgetId !== null ? window.turnstile.getResponse(widgetId) : "";
+        if (!token) {
+          tsBox.classList.add("has-error");
+          say("Vui lòng hoàn tất bước xác minh bên trên trước khi gửi.", "error");
+          return;
+        }
+      }
+
+      var data = formData(form);
+      var type = data.purpose || form.getAttribute("data-form");
+      delete data.purpose;
+      delete data.consent;
+      data.turnstileToken = token;
+      var success = form.getAttribute("data-success") || "Cảm ơn bạn! Chúng tôi sẽ liên hệ lại sớm.";
+      var hotline = " Hoặc gọi hotline " + HM.site.showroom.phone + ".";
+      var ERRORS = {
+        captcha: "Xác minh không thành công, vui lòng thử lại.",
+        invalid_phone: "Số điện thoại chưa đúng, vui lòng kiểm tra lại.",
+        invalid_email: "Email chưa đúng định dạng, vui lòng kiểm tra lại.",
+        invalid_date: "Ngày hẹn chưa hợp lệ, vui lòng chọn từ ngày mai trở đi.",
+        missing_fields: "Vui lòng điền đủ các ô bắt buộc."
+      };
+      var label = submitBtn ? submitBtn.textContent : "";
+      function done(ok, msg) {
+        form.classList.remove("is-sending");
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = label; }
+        if (window.turnstile && widgetId !== null) window.turnstile.reset(widgetId); // tokens are single-use
+        say(msg, ok ? "ok" : "error");
+        if (ok) form.reset();
+      }
+
+      if (location.protocol === "file:") {
+        // demo mode: the page was opened from disk, there is no Worker to receive it
+        console.warn("[form] demo mode (file://) — data not sent:", type, data);
+        done(true, success);
+        return;
+      }
+      form.classList.add("is-sending");
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Đang gửi…"; }
+      say("");
+      fetch((FORMS.api || "/api") + "/" + type, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }); })
+        .then(function (res) {
+          if (res && res.ok) done(true, success);
+          else {
+            if (res && res.reason) console.warn("[form] rejected:", res.error, res.reason);
+            done(false, (ERRORS[res && res.error] || "Chưa gửi được yêu cầu, vui lòng thử lại.") + hotline);
+          }
+        })
+        .catch(function () {
+          done(false, "Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại." + hotline);
+        });
     });
   });
 
@@ -260,6 +386,98 @@
       if (Math.abs(dx) > 40 && shots.length > 1) show(at + (dx < 0 ? 1 : -1));
     });
   }
+
+  // ---------- Count-up numbers (.facts strong, about.html) ----------
+  // "1948", "3", "120+", "10 năm": the number counts up from 0 when the strip scrolls into view;
+  // anything after it (+, " năm") stays put. The final text is in the HTML, so no-JS / reduced
+  // motion just shows it.
+  (function () {
+    var els = document.querySelectorAll(".facts strong");
+    if (!els.length || !("IntersectionObserver" in window) ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    function run(el) {
+      var m = el.textContent.match(/^(\D*)(\d+)(.*)$/);
+      if (!m) return;
+      var end = +m[2], t0 = null, dur = 1600;
+      function frame(t) {
+        if (t0 === null) t0 = t;
+        var k = Math.min(1, (t - t0) / dur);
+        var eased = 1 - Math.pow(1 - k, 4); // ease-out: fast start, settles on the value
+        el.textContent = m[1] + Math.round(end * eased) + m[3];
+        if (k < 1) requestAnimationFrame(frame);
+      }
+      el.textContent = m[1] + "0" + m[3];
+      requestAnimationFrame(frame);
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        run(e.target);
+      });
+    }, { threshold: 0.6 });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+
+  // ---------- "Vì sao chọn Hamamoto" tabs: [data-why] is filled from HM.why ----------
+  // Tabs on the left (click, hover on desktop, arrow keys); photo + caption + text + spec table on the right.
+  document.querySelectorAll("[data-why]").forEach(function (root, n) {
+    if (!HM || !HM.why) return;
+    var uid = "why" + n;
+    root.innerHTML =
+      '<div class="why__tabs" role="tablist" aria-label="Vì sao nên chọn Hamamoto">' +
+        HM.why.map(function (w, i) {
+          return '<button type="button" role="tab" class="why__tab" id="' + uid + "-t" + i + '" aria-controls="' + uid + "-p" + i + '"' +
+            ' aria-selected="' + (i === 0) + '"' + (i ? ' tabindex="-1"' : "") + ' style="--i:' + i + '">' +
+            '<span class="why__num">' + String(i + 1).padStart(2, "0") + "</span>" + HM.esc(w.title) + "</button>";
+        }).join("") +
+      "</div>" +
+      '<div class="why__panels">' +
+        HM.why.map(function (w, i) {
+          return '<div class="why__panel' + (i ? "" : " is-active") + '" role="tabpanel" id="' + uid + "-p" + i + '" aria-labelledby="' + uid + "-t" + i + '"' + (i ? " hidden" : "") + ">" +
+            '<figure class="why__media"><img src="' + HM.IMG + w.img + '" alt="' + HM.esc(w.caption) + '"' + (i ? ' loading="lazy"' : "") + ">" +
+              '<figcaption class="why__caption">' + HM.esc(w.caption) + "</figcaption></figure>" +
+            '<div class="why__body"><div><h3 class="h3 why__heading">' + HM.esc(w.heading) + "</h3><p>" + HM.esc(w.text) + "</p></div>" +
+              '<dl class="why__specs">' + w.specs.map(function (r) {
+                return "<div><dt>" + HM.esc(r[0]) + "</dt><dd>" + HM.esc(r[1]) + "</dd></div>";
+              }).join("") + "</dl></div>" +
+          "</div>";
+        }).join("") +
+      "</div>";
+
+    var tabs = root.querySelectorAll(".why__tab");
+    var panels = root.querySelectorAll(".why__panel");
+    var cur = 0;
+    function select(i, focus) {
+      i = (i + tabs.length) % tabs.length;
+      if (i === cur) return;
+      tabs.forEach(function (t, k) { t.setAttribute("aria-selected", String(k === i)); t.tabIndex = k === i ? 0 : -1; });
+      panels[cur].classList.remove("is-active"); panels[cur].hidden = true;
+      panels[i].hidden = false;
+      void panels[i].offsetWidth; // restart the fade-in
+      panels[i].classList.add("is-active");
+      if (focus) tabs[i].focus();
+      // keep the active tab in view on the horizontal (mobile) tab row
+      var list = tabs[i].parentNode;
+      if (list.scrollWidth > list.clientWidth) list.scrollTo({ left: tabs[i].offsetLeft - 16, behavior: "smooth" });
+      cur = i;
+    }
+    var hover = window.matchMedia("(hover: hover)").matches, ht;
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { select(i); });
+      // desktop: hovering a tab switches to it after a short pause (so passing over doesn't flicker)
+      if (hover) {
+        t.addEventListener("mouseenter", function () { clearTimeout(ht); ht = setTimeout(function () { select(i); }, 120); });
+        t.addEventListener("mouseleave", function () { clearTimeout(ht); });
+      }
+      t.addEventListener("keydown", function (e) {
+        var k = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (k) { e.preventDefault(); select(cur + k, true); }
+        if (e.key === "Home") { e.preventDefault(); select(0, true); }
+        if (e.key === "End") { e.preventDefault(); select(tabs.length - 1, true); }
+      });
+    });
+  });
 
   // Fill elements marked data-site="key" with showroom contact info
   if (HM) {
