@@ -166,14 +166,173 @@ window.HM = (function () {
     return '<img class="photo" src="assets/' + p.img + '" alt="' + esc(alt == null ? p.name + " " + p.code : alt) + '" loading="lazy">';
   }
 
-  function card(p) {
+  // ---------------------------------------------------------------------------
+  // Sizes / options, read from the catalogue dimension lines (VI text).
+  // ---------------------------------------------------------------------------
+  // Products on display at the showroom (contact.html + the "Trưng bày tại showroom" badge).
+  // TODO: replace with the real list from the showroom.
+  var onDisplay = ["sl6000-211sh42", "s7000-176sh42", "wl3000-165sh40", "da8200-sh43"];
+  function displayed(p) { return onDisplay.indexOf(p.id) > -1; }
+
+  // mm → cm text: 1650 → "165", 1734 → "173,4", "820-850" → "82–85"
+  function cm(mm) {
+    return String(mm).split("-").map(function (n) {
+      return String(Math.round(+n) / 10).replace(".", ",");
+    }).join("–");
+  }
+
+  // Overall size {w, d, h} in mm text (h may be a range), from "Rộng 1650 x Sâu 700 x Cao 820-850 mm"
+  function overall(p) {
+    var line = p.dims.vi[0] || "";
+    var m = line.match(/Rộng ([\d-]+) x Sâu ([\d-]+)(?: x Cao ([\d-]+))? mm/);
+    return m ? { w: m[1], d: m[2], h: m[3] || "" } : null;
+  }
+  // "R 165 × S 70 × C 82–85 cm" (EN: W / D / H); h = height override in mm
+  function sizeText(p, h, long) {
+    var o = overall(p);
+    if (!o) {
+      var g = options(p)[0];
+      return g && /Đường kính/.test(g.label) ? "Ø " + g.values.map(function (v) { return v.num; }).join(" / ") + " cm" : "";
+    }
+    var L = long ? (useEn ? ["Width", "Depth", "Height"] : ["Rộng", "Sâu", "Cao"]) : (useEn ? ["W", "D", "H"] : ["R", "S", "C"]);
+    var hh = h || o.h;
+    return L[0] + " " + cm(o.w) + " × " + L[1] + " " + cm(o.d) + (hh ? " × " + L[2] + " " + cm(hh) : "") + " cm";
+  }
+
+  // Selectable options: catalogue lines that say "có thể chọn", e.g.
+  //   "Chiều cao ghế ngồi: 400 / 430 mm (có thể chọn)" → Cao mặt ngồi 40 cm / 43 cm
+  //   "Đường kính có thể chọn: 50 / 70 / 90 cm"        → Ø50 / Ø70 / Ø90
+  // Each value: { text: "40 cm", num: "40", code: "SH40", sub: line under the value }
+  var optCache = {};
+  function options(p) {
+    if (optCache[p.id]) return optCache[p.id];
+    var groups = [];
+    p.dims.vi.forEach(function (line) {
+      if (!/có thể chọn/.test(line) || line.indexOf(":") < 0) return;
+      var i = line.indexOf(":");
+      var label = line.slice(0, i).replace(/có thể chọn/, "").trim();
+      var rest = line.slice(i + 1).replace(/\(có thể chọn\)/, "").trim();
+      var unit = (rest.match(/\s(mm|cm)$/) || [])[1];
+      if (unit) rest = rest.slice(0, -unit.length).trim();
+      var seat = /ghế ngồi/.test(label);
+      var prefix = seat ? "SH" : /Đường kính/.test(label) ? "Ø" : /Chiều cao/.test(label) ? "H" : "";
+      var values = rest.split("/").map(function (v) {
+        v = v.trim();
+        var num = unit === "mm" && /^\d+$/.test(v) ? cm(v) : v;
+        var text = unit ? num + " cm" : v;
+        return { text: text, num: num, code: prefix && /^\d/.test(num) ? prefix + num : "" };
+      });
+      groups.push({ label: seat ? "Cao mặt ngồi" : label, seat: seat, values: values });
+    });
+    optCache[p.id] = groups; // set before sizeText() below, which may call options() again
+    // seat-height options: the overall height range maps onto them (lower seat = lower sofa)
+    var o = overall(p);
+    groups.forEach(function (g) {
+      var hs = g.seat && o && /-/.test(o.h) && g.values.length === 2 ? o.h.split("-") : null;
+      g.values.forEach(function (v, k) {
+        if (g.seat) v.sub = sizeText(p, hs ? hs[k] : null, true) + (useEn ? " · seat height " : " · mặt ngồi cao ") + v.text;
+        else v.sub = "";
+      });
+    });
+    return groups;
+  }
+  function sizeCount(p) { var g = options(p)[0]; return g ? g.values.length : 0; }
+
+  // ---------------------------------------------------------------------------
+  // Quote list ("Yêu cầu báo giá"), kept in this browser (localStorage).
+  // Quote item: { id, finish, uph, opts: [value index per option group], qty }
+  // Changes fire "hm:store" on document (also when another tab changes the list).
+  // ---------------------------------------------------------------------------
+  var store = (function () {
+    var KQ = "hm-quote";
+    function read(k) {
+      try {
+        var v = JSON.parse(localStorage.getItem(k));
+        return Array.isArray(v) ? v : [];
+      } catch (e) { return []; }
+    }
+    function write(k, v) {
+      try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private mode: keep in memory only */ mem[k] = v; }
+      emit();
+    }
+    var mem = {};
+    function get(k) { return mem[k] || read(k); }
+    function emit() { document.dispatchEvent(new CustomEvent("hm:store")); }
+    window.addEventListener("storage", function (e) { if (e.key === KQ) emit(); });
+
+    function valid(it) { return it && find(products, it.id); }
+    function key(it) { return [it.id, it.finish || "", it.uph || "", (it.opts || []).join(".")].join("~"); }
+    function quote() {
+      return get(KQ).filter(valid).map(function (it) {
+        it.qty = Math.max(1, Math.min(99, parseInt(it.qty, 10) || 1));
+        it.opts = Array.isArray(it.opts) ? it.opts : [];
+        it.key = key(it);
+        return it;
+      });
+    }
+    function save(list) { write(KQ, list.map(function (it) { return { id: it.id, finish: it.finish, uph: it.uph, opts: it.opts, qty: it.qty }; })); }
+    // default configuration for a product (used by the tick on product cards)
+    function defaults(p) {
+      return { id: p.id, finish: p.finishes[0] || "", uph: "", opts: options(p).map(function () { return 0; }), qty: 1 };
+    }
+    return {
+      quote: quote,
+      add: function (it) {
+        var list = quote(), k = key(it), hit = null;
+        list.forEach(function (x) { if (x.key === k) hit = x; });
+        if (hit) hit.qty = Math.min(99, hit.qty + (it.qty || 1));
+        else list.push({ id: it.id, finish: it.finish, uph: it.uph, opts: it.opts || [], qty: it.qty || 1 });
+        save(list);
+      },
+      setQty: function (k, n) { var list = quote(); list.forEach(function (x) { if (x.key === k) x.qty = Math.max(1, Math.min(99, n)); }); save(list); },
+      remove: function (k) { save(quote().filter(function (x) { return x.key !== k; })); },
+      clear: function () { save([]); },
+      has: function (id) { return quote().some(function (x) { return x.id === id; }); },
+      // tick on a card: add with the default configuration, or take every line of that product out
+      toggle: function (id) {
+        var p = find(products, id);
+        if (!p) return false;
+        if (this.has(id)) { save(quote().filter(function (x) { return x.id !== id; })); return false; }
+        this.add(defaults(p));
+        return true;
+      },
+      count: function () { return quote().reduce(function (n, x) { return n + x.qty; }, 0); }
+    };
+  })();
+
+  // Finish / upholstery helpers
+  function finishName(id) { var c = find(colors, id); return c ? label(c) : esc(id || ""); }
+  // "NA · Tự nhiên" → ["NA", "Tự nhiên"]
+  function finishParts(id) { var c = find(colors, id); var s = c ? (useEn ? c.en : c.name) : id; var a = s.split(" · "); return [a[0], a[1] || ""]; }
+  function dot(id) { var c = find(colors, id); return '<i class="swatch-dot" style="--c:' + (c ? c.hex : "#ccc") + '"></i>'; }
+
+  var ICON = {
+    check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    plus: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    minus: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
+    quote: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>'
+  };
+
+  function eyebrow(p) {
     var cat = find(categories, p.cat);
-    return '<a class="pcard" href="product.html?id=' + p.id + '">' +
+    return nt(p.series) + " · " + label(cat);
+  }
+  function badge() { return '<span class="status-dot">' + (useEn ? "On display in the showroom" : "Trưng bày tại showroom") + "</span>"; }
+
+  function card(p) {
+    var size = sizeText(p), n = sizeCount(p);
+    var sw = p.finishes.slice(0, 4).map(dot).join("") + (p.finishes.length > 4 ? '<span class="more">+' + (p.finishes.length - 4) + "</span>" : "");
+    var q = store.has(p.id);
+    return '<article class="pcard' + (q ? " is-quoted" : "") + '" data-id="' + p.id + '">' +
+      '<span class="pcard__eyebrow">' + eyebrow(p) + "</span>" +
+      '<div class="pcard__acts">' +
+        '<button type="button" class="pcard__btn pcard__btn--quote" data-quote="' + p.id + '" aria-pressed="' + q + '" aria-label="Chọn ' + esc(p.name) + ' để báo giá" title="Chọn để báo giá">' + ICON.check + "</button>" +
+      "</div>" +
       '<div class="pcard__img">' + productImg(p) + "</div>" +
-      '<div class="pcard__body"><div>' +
-        '<h3 class="pcard__name">' + nt(p.name) + "</h3>" +
-        '<p class="pcard__meta">' + nt(p.series) + " · " + label(cat) + "</p>" +
-      '</div><p class="pcard__price">' + nt(p.code) + "</p></div></a>";
+      '<h3 class="pcard__name"><a class="pcard__link" href="product.html?id=' + p.id + '">' + nt(p.name) + ' <span class="nowrap">' + nt(p.code) + "</span></a></h3>" +
+      (size ? '<p class="pcard__dims">' + size + (n > 1 ? " · " + n + (useEn ? " sizes" : " cỡ") : "") + "</p>" : "") +
+      '<div class="pcard__foot"><span class="pcard__swatches">' + sw + "</span>" + (displayed(p) ? badge() : "") + "</div>" +
+    "</article>";
   }
 
   // Line icons per category (+ "all"), shared by the home category grid, the header
@@ -226,6 +385,8 @@ window.HM = (function () {
     IMG: IMG, site: site, categories: categories, materials: materials, colors: colors,
     collections: collections, products: products, concepts: concepts, news: news, why: why, swatches: CAT.swatches,
     vnd: vnd, find: find, esc: esc, nt: nt, t: t, tx: tx, txt: txt, label: label, lang: lang,
-    productImg: productImg, card: card, param: param, catIcon: catIcon
+    productImg: productImg, card: card, param: param, catIcon: catIcon,
+    onDisplay: onDisplay, displayed: displayed, cm: cm, sizeText: sizeText, options: options,
+    store: store, finishName: finishName, finishParts: finishParts, dot: dot, ICON: ICON, eyebrow: eyebrow, badge: badge
   };
 })();

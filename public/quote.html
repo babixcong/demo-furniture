@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Yêu cầu báo giá — Hamamoto</title>
+  <meta name="description" content="Danh sách sản phẩm bạn chọn để nhận báo giá chi tiết từ Hamamoto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="quote">
+  <!-- Page-transition loader: visible on arrival, lifted by js/layout.js (CSS failsafe hides it if JS fails) -->
+  <div class="page-loader" id="page-loader" aria-hidden="true">
+    <div class="page-loader__inner">
+      <img class="page-loader__logo" src="assets/images/hamamoto-logo.svg" width="115" height="49" alt="">
+      <span class="page-loader__bar"></span>
+    </div>
+  </div>
+  <header id="site-header"></header>
+
+  <main class="quote-page">
+    <div class="container">
+      <span class="pdp__eyebrow">Hỗ trợ mua hàng</span>
+      <h1 class="quote-page__title">Danh sách của bạn</h1>
+
+
+      <div class="quote-layout">
+        <div>
+          <section id="panel-quote" aria-label="Yêu cầu báo giá">
+            <ul class="qlist" id="qlist"></ul>
+            <div class="qempty" id="qempty" hidden>
+              <p>Chưa có mẫu nào trong yêu cầu báo giá.</p>
+              <p class="muted">Bấm dấu ✓ trên ảnh sản phẩm, hoặc chọn kích thước, màu và số lượng ở trang chi tiết rồi bấm “Thêm vào yêu cầu báo giá”.</p>
+              <a class="btn btn--dark btn--sm" href="shop.html">Xem sản phẩm</a>
+            </div>
+            <div class="qempty qsent" id="qsent" hidden tabindex="-1">
+              <p>Đã gửi yêu cầu báo giá</p>
+              <p class="muted" id="qsent-text"></p>
+              <a class="btn btn--dark btn--sm" href="shop.html">Xem thêm sản phẩm</a>
+            </div>
+          </section>
+        </div>
+
+        <form class="quote-form" id="quote-form" data-form="quote" data-success="Cảm ơn bạn! Tư vấn viên sẽ gọi lại để xác nhận cấu hình và gửi báo giá chi tiết.">
+          <h2>Gửi yêu cầu báo giá</h2>
+          <p class="muted">Tư vấn viên sẽ gọi lại để xác nhận cấu hình và báo giá chi tiết.</p>
+          <div class="quote-form__sum"><span>Số mẫu trong yêu cầu</span><strong id="q-sum">0 mẫu · 0 món</strong></div>
+          <input type="hidden" name="models" id="q-models">
+          <input type="hidden" name="pieces" id="q-pieces">
+          <input type="hidden" name="items" id="q-items">
+          <div class="form-grid">
+            <div class="field field--full"><label for="q-name">Họ và tên <span class="req">*</span></label><input id="q-name" name="name" autocomplete="name" minlength="2" maxlength="80" required><p class="field__error"></p></div>
+            <div class="field"><label for="q-phone">Số điện thoại <span class="req">*</span></label><input id="q-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="16" placeholder="VD: 0912 345 678" required><p class="field__error"></p></div>
+            <div class="field"><label for="q-email">Email <span class="muted">(không bắt buộc)</span></label><input id="q-email" name="email" type="email" autocomplete="email" maxlength="254"><p class="field__error"></p></div>
+            <div class="field"><label for="q-city">Tỉnh, thành phố</label>
+              <select id="q-city" name="city">
+                <option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Đà Nẵng</option><option>Hải Phòng</option>
+                <option>Cần Thơ</option><option>Quảng Ninh</option><option>Khánh Hòa</option><option>Tỉnh, thành khác</option>
+              </select><p class="field__error"></p></div>
+            <div class="field"><label for="q-role">Bạn là</label>
+              <select id="q-role" name="role">
+                <option>Khách mua cho gia đình</option><option>Kiến trúc sư / nhà thiết kế</option><option>Doanh nghiệp / dự án</option>
+              </select><p class="field__error"></p></div>
+            <div class="field field--full"><label for="q-msg">Ghi chú <span class="muted">(diện tích phòng, thời gian cần hàng)</span></label><textarea id="q-msg" name="message" maxlength="2000"></textarea><p class="field__error"></p></div>
+            <label class="check field--full"><input type="checkbox" name="consent" required><span>Tôi đồng ý để Hamamoto Việt Nam liên hệ tư vấn theo thông tin trên, theo <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>. <span class="req">*</span></span></label>
+          </div>
+          <div class="form-actions"><button class="btn btn--dark btn--block" type="submit" id="q-submit">Gửi yêu cầu báo giá</button></div>
+          <p class="form-status" role="status" style="margin-top:16px"></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/catalog.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/quote.js"></script>
+</body>
+</html>

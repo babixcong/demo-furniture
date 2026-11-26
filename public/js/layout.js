@@ -16,7 +16,8 @@
     products: { vi: "Sản phẩm", en: "Products", ja: "製品" },
     brand: { vi: "Thương hiệu", en: "Brand", ja: "ブランド" },
     contact: { vi: "Liên hệ", en: "Contact", ja: "お問い合わせ" },
-    book: { vi: "Đặt lịch showroom", en: "Book a visit", ja: "来店予約" }
+    book: { vi: "Đặt lịch showroom", en: "Book a visit", ja: "来店予約" },
+    quote: { vi: "Báo giá", en: "Quote", ja: "見積もり" }
   };
 
   function current(ids) { return ids.indexOf(page) > -1 ? ' aria-current="page"' : ""; }
@@ -92,31 +93,63 @@
       "</div>" +
     "</div>";
 
-  // Floating contact button (every page): opens Facebook Messenger / Zalo
+  // Contact tag (every page): a tab fixed to the right edge with the Facebook (Messenger) and Zalo
+  // logos as direct links. Each logo's name slides out on hover/focus; the icons "ring" in turn
+  // every few seconds to catch the eye (CSS, off with reduced motion).
   var C = HM.site.chat;
   var fab =
-    '<div class="fab" id="fab">' +
-      '<ul class="fab__menu" id="fab-menu" hidden>' +
-        '<li><a class="fab__item" href="' + C.messenger + '" target="_blank" rel="noopener">' +
-          '<span class="fab__icon fab__icon--fb" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8.5V6.8c0-.8.2-1.3 1.4-1.3H17V2.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v1.9H8V11.7h2.6V21.5H14v-9.8h2.6l.4-3.2z"/></svg></span>' +
-          "<span><strong>Facebook</strong><small>Nhắn tin qua Messenger</small></span></a></li>" +
-        '<li><a class="fab__item" href="' + C.zalo + '" target="_blank" rel="noopener">' +
-          '<span class="fab__icon fab__icon--zalo" aria-hidden="true">Zalo</span>' +
-          "<span><strong>Zalo</strong><small>Chat với tư vấn viên</small></span></a></li>" +
-      "</ul>" +
-      '<button class="fab__toggle" type="button" aria-expanded="false" aria-controls="fab-menu" aria-label="Liên hệ nhanh qua Facebook, Zalo">' +
-        '<svg class="fab__open" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.3 7.6L3 21l1.4-5.4A8.5 8.5 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01" stroke-width="2.4" stroke-linecap="round"/></svg>' +
-        '<svg class="fab__close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
-      "</button>" +
-    "</div>";
+    '<aside class="fab" id="fab" aria-label="Liên hệ nhanh">' +
+      '<span class="fab__label" aria-hidden="true">Chat ngay</span>' +
+      '<a class="fab__link fab__link--fb" href="' + C.messenger + '" target="_blank" rel="noopener" aria-label="Nhắn tin qua Facebook Messenger (mở tab mới)">' +
+        '<span class="fab__logo" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.44 3.14 7.17.16.15.26.35.27.57l.05 1.78c.02.57.6.94 1.12.71l1.98-.87c.17-.08.36-.09.54-.04.91.25 1.87.38 2.9.38 5.64 0 10-4.13 10-9.7S17.64 2 12 2z"/><path class="fab__bolt" fill="#fff" d="M5.99 14.54l2.94-4.66c.47-.74 1.47-.93 2.17-.4l2.34 1.75c.21.16.51.16.72 0l3.16-2.4c.42-.32.97.18.69.63l-2.94 4.66c-.47.74-1.47.93-2.17.4l-2.34-1.75a.6.6 0 0 0-.72 0l-3.16 2.4c-.42.32-.97-.18-.69-.63z"/></svg></span>' +
+        '<span class="fab__name" aria-hidden="true">Facebook</span></a>' +
+      '<a class="fab__link fab__link--zalo" href="' + C.zalo + '" target="_blank" rel="noopener" aria-label="Chat qua Zalo (mở tab mới)">' +
+        '<span class="fab__logo" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 48 48"><path fill="currentColor" d="M24 5C12.4 5 3 12.9 3 22.6c0 5.6 3.1 10.6 8 13.8-.4 2.3-1.6 4.4-3.4 6 3.5.3 6.9-.8 9.6-2.9 2.2.6 4.4.9 6.8.9 11.6 0 21-7.9 21-17.6S35.6 5 24 5z"/><text x="24" y="27.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11.5" font-weight="700" fill="#fff">Zalo</text></svg></span>' +
+        '<span class="fab__name" aria-hidden="true">Zalo</span></a>' +
+    "</aside>";
 
   var h = document.getElementById("site-header");
   var f = document.getElementById("site-footer");
   if (h) { h.className = "site-header" + (page === "home" ? " site-header--overlay" : ""); h.innerHTML = header; }
   if (f) { f.className = "site-footer"; f.innerHTML = footer; }
-  document.body.insertAdjacentHTML("beforeend", fab);
+  // Right-edge dock: the quote-list tab ("Báo giá" + count, shown once something is picked)
+  // sits on top of the contact tab; both move together.
+  var qfab =
+    '<div class="qfab" id="quote-link" hidden>' +
+      '<a class="fab__link qfab__link" href="quote.html"' + (page === "quote" ? ' aria-current="page"' : "") + ">" +
+        '<span class="fab__logo qfab__icon" aria-hidden="true">' + HM.ICON.quote + "</span>" +
+        '<span class="qfab__n" id="quote-n" aria-hidden="true">0</span>' +
+        '<span class="fab__name" aria-hidden="true">' + HM.t(L.quote) + "</span></a>" +
+    "</div>";
+  document.body.insertAdjacentHTML("beforeend", '<div class="side-dock">' + qfab + fab + "</div>");
 
-  // Back-to-top button (every page): sits above the contact button, appears after scrolling down;
+  // "Báo giá" tab (right-edge dock): count of pieces in the quote list; visible when the list has
+  // something (always on quote.html). Kept in sync across pages/tabs via "hm:store".
+  var qLink = document.getElementById("quote-link");
+  var qN = document.getElementById("quote-n");
+  function paintQuote() {
+    if (!qLink) return;
+    var n = HM.store.count();
+    qN.textContent = n;
+    qN.hidden = !n;
+    qLink.hidden = !(n || page === "quote");
+    qLink.querySelector("a").setAttribute("aria-label", "Danh sách báo giá: " + n + " món");
+  }
+  paintQuote();
+  document.addEventListener("hm:store", paintQuote);
+
+  // Small notice at the bottom of the screen (e.g. "Đã thêm vào yêu cầu báo giá · Xem danh sách")
+  document.body.insertAdjacentHTML("beforeend", '<div class="toast" id="toast" role="status" aria-live="polite"></div>');
+  var toast = document.getElementById("toast"), toastT;
+  HM.toast = function (html) {
+    toast.innerHTML = html;
+    toast.classList.add("is-on");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toast.classList.remove("is-on"); }, 3200);
+    if (qLink && !qLink.hidden) { qLink.classList.remove("is-bump"); void qLink.offsetWidth; qLink.classList.add("is-bump"); }
+  };
+
+  // Back-to-top button (every page): bottom-right corner, appears after scrolling down;
   // the ring around it fills with the reading progress.
   document.body.insertAdjacentHTML("beforeend",
     '<button class="to-top" id="to-top" type="button" aria-label="Lên đầu trang" tabindex="-1">' +

@@ -57,23 +57,8 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
-  // ---------- Floating contact button ----------
-  var fab = document.getElementById("fab");
-  var fabBtn = fab && fab.querySelector(".fab__toggle");
-  var fabMenu = document.getElementById("fab-menu");
-  function setFab(open) {
-    fab.classList.toggle("is-open", open);
-    fabMenu.hidden = !open;
-    fabBtn.setAttribute("aria-expanded", String(open));
-  }
-  if (fab) {
-    fabBtn.addEventListener("click", function () { setFab(fabMenu.hidden); });
-    document.addEventListener("click", function (e) { if (!fabMenu.hidden && !e.target.closest("#fab")) setFab(false); });
-  }
-
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
-    if (fab && !fabMenu.hidden) { setFab(false); fabBtn.focus(); }
     closeAll();
   });
 
@@ -121,6 +106,31 @@
     });
   });
 
+  // ---------- Product cards: tick = pick for the quote list ----------
+  // (cards are rendered by HM.card on many pages; one delegated handler covers them all)
+  function paintCards() {
+    document.querySelectorAll(".pcard[data-id]").forEach(function (c) {
+      var id = c.getAttribute("data-id"), q = HM.store.has(id);
+      c.classList.toggle("is-quoted", q);
+      var bq = c.querySelector("[data-quote]");
+      if (bq) bq.setAttribute("aria-pressed", String(q));
+    });
+  }
+  if (HM && HM.store) {
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-quote]");
+      if (!b || !b.closest(".pcard")) return;
+      e.preventDefault();
+      var id = b.getAttribute("data-quote");
+      var p = HM.find(HM.products, id);
+      var on = HM.store.toggle(id);
+      HM.toast(on
+        ? "Đã thêm <b>" + HM.esc(p.name + " " + p.code) + '</b> vào yêu cầu báo giá. <a href="quote.html">Xem danh sách</a>'
+        : "Đã bỏ <b>" + HM.esc(p.name + " " + p.code) + "</b> khỏi yêu cầu báo giá.");
+    });
+    document.addEventListener("hm:store", paintCards);
+  }
+
   // ---------- Forms: validation, Turnstile, submit to Google Sheets ----------
   var MSG = {
     valueMissing: "Vui lòng điền thông tin này.",
@@ -136,6 +146,9 @@
     var v = input.validity, msg = "";
     if (v.valid && input.type === "tel" && input.value.trim() && !VN_PHONE.test(input.value.replace(/[\s.()-]/g, ""))) {
       msg = "Số điện thoại chưa đúng (VD: 0912 345 678).";
+    } else if (v.valid && input.minLength > 0 && input.value.trim() && input.value.trim().length < input.minLength) {
+      // the browser only checks minlength after the user types; check pasted / autofilled values too
+      msg = input.name === "name" ? "Vui lòng nhập họ tên đầy đủ." : MSG.tooShort;
     } else if (!v.valid) {
       msg = v.valueMissing ? MSG.valueMissing : v.typeMismatch ? (input.type === "email" ? "Email chưa đúng định dạng." : MSG.typeMismatch)
         : v.patternMismatch ? (input.type === "tel" ? "Số điện thoại chưa đúng." : MSG.patternMismatch)
@@ -220,6 +233,9 @@
       var bad = null;
       form.querySelectorAll("input, select, textarea").forEach(function (i) {
         if (i.closest(".hp") || i.closest(".form-turnstile")) return;
+        // fields switched off for the current mode (e.g. booking-only fields in "Nhận tư vấn"):
+        // a disabled <select required> still reports valueMissing in Chrome, so skip them here
+        if (i.disabled || i.closest("[hidden]")) return;
         if (!check(i) && !bad) bad = i;
       });
       if (bad) { bad.focus(); say(""); return; }
@@ -246,7 +262,9 @@
         invalid_phone: "Số điện thoại chưa đúng, vui lòng kiểm tra lại.",
         invalid_email: "Email chưa đúng định dạng, vui lòng kiểm tra lại.",
         invalid_date: "Ngày hẹn chưa hợp lệ, vui lòng chọn từ ngày mai trở đi.",
-        missing_fields: "Vui lòng điền đủ các ô bắt buộc."
+        missing_fields: "Vui lòng điền đủ các ô bắt buộc.",
+        invalid_choice: "Lựa chọn chưa hợp lệ, vui lòng tải lại trang và thử lại.",
+        invalid_items: "Danh sách sản phẩm chưa hợp lệ, vui lòng tải lại trang và thử lại."
       };
       var label = submitBtn ? submitBtn.textContent : "";
       function done(ok, msg) {
@@ -254,7 +272,7 @@
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = label; }
         if (window.turnstile && widgetId !== null) window.turnstile.reset(widgetId); // tokens are single-use
         say(msg, ok ? "ok" : "error");
-        if (ok) form.reset();
+        if (ok) { form.reset(); form.dispatchEvent(new CustomEvent("hm:sent")); }
       }
 
       if (location.protocol === "file:") {
