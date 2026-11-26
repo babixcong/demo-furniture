@@ -4,13 +4,13 @@
  * Cài đặt (xem README.md ở thư mục gốc, mục "Form → Google Sheet"):
  *   1. Mở Google Sheet → Extensions (Tiện ích mở rộng) → Apps Script → dán toàn bộ file này.
  *   2. Project Settings (biểu tượng bánh răng) → Script Properties → thêm:
- *        TOKEN = <chuỗi bí mật, trùng với SHEET_TOKEN (Sheet khách hàng) hoặc PARTNER_SHEET_TOKEN (Sheet đối tác) trên Cloudflare>
+ *        TOKEN = <chuỗi bí mật, trùng với SHEET_TOKEN (Sheet khách hàng), PARTNER_SHEET_TOKEN (Sheet đối tác) hoặc QUOTE_SHEET_TOKEN (Sheet báo giá) trên Cloudflare>
  *   3. Deploy → New deployment → Web app
  *        Execute as: Me   ·   Who has access: Anyone
  *      → copy "Web app URL" (kết thúc bằng /exec).
  *
- * Dùng chung 1 file cho cả 2 Sheet: Sheet khách hàng (form "booking" + "consult" + "quote")
- * và Sheet đối tác (form "partner"). Có thể dùng 1 Sheet cho cả 3 form nếu không tách.
+ * Dùng chung 1 file cho cả 3 Sheet: Sheet khách hàng (form "booking" + "consult"), Sheet báo giá (form "quote")
+ * và Sheet đối tác (form "partner"). Có thể dùng 1 Sheet cho cả 4 form nếu không tách.
  * Tên tab do Worker gửi sang (vd. "Đặt lịch showroom 25/11/2026"): mỗi ngày một tab, tự tạo nếu chưa có.
  */
 

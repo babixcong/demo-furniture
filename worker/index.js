@@ -4,7 +4,7 @@
  *   POST /api/booking  (contact.html, "Đặt lịch xem showroom")  → Turnstile → Google Sheet khách hàng
  *   POST /api/consult  (contact.html, "Nhận tư vấn")            → Turnstile → Google Sheet khách hàng
  *   POST /api/partner  (professionals.html, "Đăng ký hợp tác")  → Turnstile → Google Sheet đối tác
- *   POST /api/quote    (quote.html, "Gửi yêu cầu báo giá")      → Turnstile → Google Sheet khách hàng
+ *   POST /api/quote    (quote.html, "Gửi yêu cầu báo giá")      → Turnstile → Google Sheet báo giá
  *   Mọi đường dẫn khác → file tĩnh của website (env.ASSETS, thư mục public/)
  *
  * Biến môi trường (Cloudflare → Worker → Settings → Variables and Secrets, loại Secret):
@@ -14,6 +14,9 @@
  *   PARTNER_SHEET_WEBHOOK_URL  URL Web app của Apps Script gắn với Sheet đối tác
  *                              (bỏ trống thì ghi chung vào Sheet khách hàng)
  *   PARTNER_SHEET_TOKEN        TOKEN của Sheet đối tác (bỏ trống thì dùng SHEET_TOKEN)
+ *   QUOTE_SHEET_WEBHOOK_URL    URL Web app của Apps Script gắn với Sheet báo giá
+ *                              (bỏ trống thì ghi chung vào Sheet khách hàng)
+ *   QUOTE_SHEET_TOKEN          TOKEN của Sheet báo giá (bỏ trống thì dùng SHEET_TOKEN)
  */
 
 // Mỗi form: đường dẫn API, action của widget Turnstile, tên tab (title + ngày gửi,
@@ -58,8 +61,8 @@ const FORMS = {
     maxLen: { items: 10000 },
     // models = số mẫu, pieces = tổng số món; items = mỗi dòng một mẫu "1. <mã> <tên> — <cấu hình> — SL <n>"
     check: checkQuote,
-    sheetUrl: 'SHEET_WEBHOOK_URL',
-    sheetToken: 'SHEET_TOKEN',
+    sheetUrl: 'QUOTE_SHEET_WEBHOOK_URL',
+    sheetToken: 'QUOTE_SHEET_TOKEN',
   },
   partner: {
     path: '/api/partner',

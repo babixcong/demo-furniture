@@ -35,7 +35,7 @@ Flow: browser → Worker. The Worker checks fields, Vietnamese phone, email, app
 3. Keep the **Secret Key** for step 3.
 
 ### 2. Google Sheet + Apps Script
-Use one sheet for customers (booking + consult + quote). Re-paste the Apps Script after updating it so the quote columns exist. You can add a second sheet for partners (partner); otherwise partner rows go to the customer sheet.
+Use one sheet for customers (booking + consult). Partners (partner) and quote requests (quote) can each have their own sheet file; if their variables below are empty, those rows go to the customer sheet. Every sheet uses the same `worker/google-apps-script.gs` (it holds the columns of all forms).
 
 For each sheet:
 1. Extensions → **Apps Script** → paste in all of `worker/google-apps-script.gs`.
@@ -59,6 +59,8 @@ Cloudflare → Worker → Settings → **Variables and Secrets** (type Secret), 
 | `SHEET_TOKEN` | `TOKEN` of the customer sheet |
 | `PARTNER_SHEET_WEBHOOK_URL` | `/exec` URL of the partner sheet (leave empty to use the customer sheet) |
 | `PARTNER_SHEET_TOKEN` | `TOKEN` of the partner sheet (leave empty to use `SHEET_TOKEN`) |
+| `QUOTE_SHEET_WEBHOOK_URL` | `/exec` URL of the quote sheet's Apps Script (leave empty to use the customer sheet) |
+| `QUOTE_SHEET_TOKEN` | `TOKEN` of the quote sheet (leave empty to use `SHEET_TOKEN`) |
 
 For `wrangler dev`, put the same values in a `.dev.vars` file at the repo root (it is git-ignored).
 
