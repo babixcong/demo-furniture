@@ -86,7 +86,7 @@
               </div>
             </div>
             <div class="field"><label for="c-name">Họ và tên <span class="req">*</span></label><input id="c-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
-            <div class="field"><label for="c-phone">Số điện thoại <span class="req">*</span></label><input id="c-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
+            <div class="field"><label for="c-phone">Số điện thoại <span class="req">*</span></label><input id="c-phone" name="phone" type="tel" autocomplete="tel" required><p class="field__error"></p></div>
             <div class="field field--full"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email"><p class="field__error"></p></div>
 
             <div class="field booking-only"><label for="c-date">Ngày <span class="req">*</span></label><input id="c-date" name="date" type="date" data-future required><p class="field__error"></p></div>
@@ -107,7 +107,7 @@
             </div>
 
             <div class="field field--full"><label for="c-msg">Ghi chú / câu hỏi <span class="req consult-only" hidden>*</span></label><textarea id="c-msg" name="message" data-prefill-product placeholder="Diện tích, phong cách, sản phẩm bạn muốn xem…"></textarea><p class="field__error"></p></div>
-            <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
+            <label class="check field--full"><input type="checkbox" name="consent" required><span>Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>. <span class="req">*</span></span></label>
           </div>
           <div class="form-actions"><button class="btn btn--dark" type="submit" id="c-submit">Gửi yêu cầu đặt lịch</button></div>
           <p class="form-status" role="status" style="margin-top:16px"></p>
@@ -153,7 +153,7 @@
       var HM = window.HM, S = HM.site.showroom;
       document.getElementById("map").src = S.map;
       document.getElementById("map-link").href = S.mapLink;
-      var ids = ["sl6000-211sh42", "s7000-176sh42", "wl3000-165sh40", "da8200-sh43"];
+      var ids = HM.onDisplay;
       document.getElementById("on-display").innerHTML = ids.map(function (id) { return HM.card(HM.find(HM.products, id)); }).join("");
 
       // Booking vs consult: booking-only fields are hidden + disabled (so they skip validation)

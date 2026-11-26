@@ -4,6 +4,7 @@
  *   POST /api/booking  (contact.html, "Đặt lịch xem showroom")  → Turnstile → Google Sheet khách hàng
  *   POST /api/consult  (contact.html, "Nhận tư vấn")            → Turnstile → Google Sheet khách hàng
  *   POST /api/partner  (professionals.html, "Đăng ký hợp tác")  → Turnstile → Google Sheet đối tác
+ *   POST /api/quote    (quote.html, "Gửi yêu cầu báo giá")      → Turnstile → Google Sheet khách hàng
  *   Mọi đường dẫn khác → file tĩnh của website (env.ASSETS, thư mục public/)
  *
  * Biến môi trường (Cloudflare → Worker → Settings → Variables and Secrets, loại Secret):
@@ -19,7 +20,7 @@
 // vd. "Đặt lịch showroom 25/11/2026"), các trường được nhận (trường khác bị bỏ qua), trường bắt buộc,
 // giá trị cho phép của ô chọn (multi = được chọn nhiều, ngăn bởi ", "),
 // và tên biến chứa URL/TOKEN của Apps Script nhận dữ liệu.
-// Giá trị trong choices phải trùng với value trong HTML (public/contact.html, public/professionals.html).
+// Giá trị trong choices phải trùng với value trong HTML (public/contact.html, public/professionals.html, public/quote.html).
 const FORMS = {
   booking: {
     path: '/api/booking',
@@ -41,6 +42,22 @@ const FORMS = {
     title: 'Nhận tư vấn',
     fields: ['name', 'phone', 'email', 'message'],
     required: ['name', 'phone', 'message'],
+    sheetUrl: 'SHEET_WEBHOOK_URL',
+    sheetToken: 'SHEET_TOKEN',
+  },
+  quote: {
+    path: '/api/quote',
+    action: 'quote',
+    title: 'Yêu cầu báo giá',
+    fields: ['name', 'phone', 'email', 'city', 'role', 'models', 'pieces', 'items', 'message'],
+    required: ['name', 'phone', 'models', 'pieces', 'items'],
+    choices: {
+      city: ['Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ', 'Quảng Ninh', 'Khánh Hòa', 'Tỉnh, thành khác'],
+      role: ['Khách mua cho gia đình', 'Kiến trúc sư / nhà thiết kế', 'Doanh nghiệp / dự án'],
+    },
+    maxLen: { items: 10000 },
+    // models = số mẫu, pieces = tổng số món; items = mỗi dòng một mẫu "1. <mã> <tên> — <cấu hình> — SL <n>"
+    check: checkQuote,
     sheetUrl: 'SHEET_WEBHOOK_URL',
     sheetToken: 'SHEET_TOKEN',
   },
@@ -95,7 +112,7 @@ async function handleForm(request, env, formName) {
 
   const spec = FORMS[formName];
   const data = {};
-  for (const key of spec.fields) data[key] = String(body[key] ?? '').trim().slice(0, MAX_LEN);
+  for (const key of spec.fields) data[key] = String(body[key] ?? '').trim().slice(0, (spec.maxLen || {})[key] || MAX_LEN);
   if (spec.required.some((k) => !data[k])) return json({ ok: false, error: 'missing_fields' }, 400);
   for (const [key, allowed] of Object.entries(spec.choices || {})) {
     if (!data[key]) continue;
@@ -109,6 +126,11 @@ async function handleForm(request, env, formName) {
     // Ngày hẹn: đúng định dạng YYYY-MM-DD và từ ngày mai trở đi (giờ Việt Nam)
     if (!ISO_DATE.test(data.date) || data.date <= isoToday()) return json({ ok: false, error: 'invalid_date' }, 400);
     data.date = data.date.split('-').reverse().join('/');
+  }
+
+  if (spec.check) {
+    const err = spec.check(data);
+    if (err) return json({ ok: false, error: err }, 400);
   }
 
   const captcha = await verifyTurnstile(env, body.turnstileToken, spec.action || formName, request.headers.get('CF-Connecting-IP'));
@@ -137,6 +159,28 @@ async function handleForm(request, env, formName) {
     return json({ ok: false, error: 'sheet' }, 502);
   }
   return json({ ok: true });
+}
+
+// Yêu cầu báo giá: số mẫu / số món là số nguyên hợp lệ, và khớp với danh sách sản phẩm gửi kèm
+const QUOTE_LINE = /^\d{1,2}\. .+ — SL (\d{1,2})$/;
+const MAX_MODELS = 50;
+function checkQuote(data) {
+  const models = Number(data.models);
+  const pieces = Number(data.pieces);
+  if (!Number.isInteger(models) || !Number.isInteger(pieces) || models < 1 || models > MAX_MODELS || pieces < models || pieces > MAX_MODELS * 99) {
+    return 'invalid_items';
+  }
+  const lines = data.items.split('\n').map((l) => l.trim()).filter(Boolean);
+  if (lines.length !== models) return 'invalid_items';
+  let sum = 0;
+  for (const line of lines) {
+    const m = line.match(QUOTE_LINE);
+    if (!m || Number(m[1]) < 1) return 'invalid_items';
+    sum += Number(m[1]);
+  }
+  if (sum !== pieces) return 'invalid_items';
+  if (data.name.length < 2) return 'missing_fields';
+  return '';
 }
 
 async function verifyTurnstile(env, token, action, ip) {

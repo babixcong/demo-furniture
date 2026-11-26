@@ -9,7 +9,7 @@
  *        Execute as: Me   ·   Who has access: Anyone
  *      → copy "Web app URL" (kết thúc bằng /exec).
  *
- * Dùng chung 1 file cho cả 2 Sheet: Sheet khách hàng (form "booking" + "consult")
+ * Dùng chung 1 file cho cả 2 Sheet: Sheet khách hàng (form "booking" + "consult" + "quote")
  * và Sheet đối tác (form "partner"). Có thể dùng 1 Sheet cho cả 3 form nếu không tách.
  * Tên tab do Worker gửi sang (vd. "Đặt lịch showroom 25/11/2026"): mỗi ngày một tab, tự tạo nếu chưa có.
  */
@@ -32,6 +32,19 @@ var COLUMNS = {
     ['Số điện thoại', 'phone'],
     ['Email', 'email'],
     ['Câu hỏi', 'message'],
+    ['Trang gửi', 'page'],
+  ],
+  quote: [
+    ['Thời gian', 'time'],
+    ['Họ và tên', 'name'],
+    ['Số điện thoại', 'phone'],
+    ['Email', 'email'],
+    ['Tỉnh, thành phố', 'city'],
+    ['Khách hàng là', 'role'],
+    ['Số mẫu', 'models'],
+    ['Tổng số món', 'pieces'],
+    ['Sản phẩm yêu cầu báo giá', 'items'],
+    ['Ghi chú', 'message'],
     ['Trang gửi', 'page'],
   ],
   partner: [
@@ -67,6 +80,8 @@ function doPost(e) {
     try {
       var sheet = getSheet(body.sheet || body.form, cols);
       sheet.appendRow(row);
+      // nhiều dòng (danh sách sản phẩm báo giá, ghi chú): xuống dòng trong ô, căn trên
+      sheet.getRange(sheet.getLastRow(), 1, 1, cols.length).setWrap(true).setVerticalAlignment('top');
     } finally {
       lock.releaseLock();
     }

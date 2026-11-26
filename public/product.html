@@ -25,39 +25,79 @@
 
   <main>
     <div class="container" style="padding-top:40px">
-      <ol class="breadcrumb" id="crumbs"><li><a href="index.html">Trang chủ</a></li><li><a href="shop.html">Sản phẩm</a></li></ol>
+      <ol class="breadcrumb" id="crumbs"><li><a href="shop.html">Sản phẩm</a></li></ol>
     </div>
 
     <div class="container pdp" id="pdp">
       <div class="pdp__gallery">
-        <div class="pdp__main" id="pdp-main"></div>
-        <p class="pdp__note" id="pdp-note" hidden></p>
+        <div class="pdp__main" id="pdp-main"><span class="pdp__tag" id="pdp-tag" hidden></span></div>
+        <div class="pdp__thumbs" id="pdp-thumbs"></div>
       </div>
 
       <div class="pdp__info">
-        <a class="eyebrow" id="pdp-collection" href="collections.html"></a>
-        <h1 class="h1" id="pdp-name"></h1>
-        <p class="pdp__code" id="pdp-code"></p>
+        <span class="pdp__eyebrow" id="pdp-eyebrow"></span>
+        <h1 class="pdp__title" id="pdp-name"></h1>
+        <p class="pdp__status" id="pdp-status"></p>
+        <p class="pdp__lead" id="pdp-lead"></p>
+        <p class="pdp__sub" id="pdp-note" hidden></p>
 
-        <div class="pdp__options" id="opt-uph-wrap">
-          <p class="label" style="margin-bottom:12px;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase">Vải bọc có thể chọn</p>
-          <div class="opt-list" id="opt-uph"></div>
-        </div>
-        <div class="pdp__options" id="opt-finish-wrap">
-          <p class="label" style="margin-bottom:12px;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase">Màu khung gỗ</p>
-          <div class="finish-dots" id="opt-finish"></div>
-        </div>
+        <div id="pdp-groups"></div>
 
-        <div class="pdp__cta">
-          <a class="btn btn--dark btn--block" id="cta-book" href="contact.html#booking">Đặt lịch xem tại showroom</a>
-          <a class="btn btn--outline btn--block" id="cta-contact" href="contact.html">Liên hệ tư vấn</a>
-        </div>
+        <section class="pdp__group" id="opt-finish-wrap" aria-labelledby="opt-finish-t">
+          <div class="pdp__group-head"><h2 id="opt-finish-t">Màu hoàn thiện gỗ</h2><span id="opt-finish-name"></span></div>
+          <div class="finish-pick" id="opt-finish" role="radiogroup" aria-labelledby="opt-finish-t"></div>
+        </section>
 
-        <section class="spec-block" aria-labelledby="spec-dims"><h2 id="spec-dims">Kích thước</h2><ul id="pdp-dims"></ul></section>
-        <section class="spec-block" aria-labelledby="spec-mat"><h2 id="spec-mat">Vật liệu</h2><ul id="pdp-materials"></ul></section>
-        <section class="spec-block" aria-labelledby="spec-feat"><h2 id="spec-feat">Công năng / chức năng</h2><ul id="pdp-features"></ul></section>
+        <section class="pdp__group" id="opt-uph-wrap" aria-labelledby="opt-uph-t">
+          <div class="pdp__group-head"><h2 id="opt-uph-t">Chất liệu bọc</h2><span>Chọn khi tư vấn</span></div>
+          <div class="chip-pick" id="opt-uph" role="radiogroup" aria-labelledby="opt-uph-t"></div>
+          <p class="pdp__sub">Vải và da bọc có nhiều mẫu. Bạn xem và chạm mẫu thật tại showroom, hoặc nhờ tư vấn viên gửi bảng mẫu. Loại bọc có ảnh hưởng đến giá.</p>
+        </section>
+
+        <div class="pdp__buy">
+          <div class="stepper" id="pdp-qty">
+            <button type="button" data-step="-1" aria-label="Giảm số lượng"></button>
+            <input type="number" id="qty" value="1" min="1" max="99" inputmode="numeric" aria-label="Số lượng">
+            <button type="button" data-step="1" aria-label="Tăng số lượng"></button>
+          </div>
+          <button class="pdp__add" type="button" id="pdp-add">Thêm vào yêu cầu báo giá</button>
+        </div>
+        <p class="pdp__sub" style="margin-top:16px">Giá phụ thuộc kích thước, màu gỗ và chất liệu bọc. Thêm mẫu vào danh sách rồi gửi, tư vấn viên sẽ báo giá chi tiết cho đúng cấu hình bạn chọn.</p>
+
+        <div class="pdp__contact">
+          <a id="cta-zalo" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Chat Zalo</a>
+          <a id="cta-call"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg>Gọi tư vấn</a>
+          <a id="cta-book" href="contact.html#booking"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Đặt lịch xem mẫu</a>
+        </div>
       </div>
     </div>
+
+    <!-- Thông số: two-column table -->
+    <section class="section spec" aria-labelledby="spec-t">
+      <div class="container">
+        <div class="spec__head">
+          <h2 class="h1" id="spec-t">Thông số</h2>
+          <p>Số đo lấy theo công bố của nhà sản xuất, đơn vị gốc là milimét. Gỗ là vật liệu tự nhiên nên vân và sắc độ mỗi sản phẩm có khác nhau đôi chút.</p>
+        </div>
+        <div class="spec__grid" id="spec-grid"></div>
+      </div>
+    </section>
+
+    <!-- About the collection -->
+    <section class="section section--tight" id="pdp-col" aria-labelledby="pdp-col-t" hidden>
+      <div class="container">
+        <div class="col-band">
+          <div class="col-band__text">
+            <span class="pdp__eyebrow" id="pdp-col-eyebrow"></span>
+            <h2 class="h2" id="pdp-col-t"></h2>
+            <p id="pdp-col-text"></p>
+            <a class="col-band__link" id="pdp-col-link" href="collections.html"></a>
+          </div>
+          <div class="col-band__media"><img id="pdp-col-img" alt="" loading="lazy"></div>
+        </div>
+        <div class="feature-row" id="pdp-why"></div>
+      </div>
+    </section>
 
     <section class="section section--cream" aria-labelledby="related-title">
       <div class="container">

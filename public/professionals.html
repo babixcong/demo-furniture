@@ -82,14 +82,14 @@
             <div class="field"><label for="r-name">Họ và tên <span class="req">*</span></label><input id="r-name" name="name" autocomplete="name" required><p class="field__error"></p></div>
             <div class="field"><label for="r-company">Công ty / Studio <span class="req">*</span></label><input id="r-company" name="company" autocomplete="organization" required><p class="field__error"></p></div>
             <div class="field"><label for="r-email">Email <span class="req">*</span></label><input id="r-email" name="email" type="email" autocomplete="email" required><p class="field__error"></p></div>
-            <div class="field"><label for="r-phone">Số điện thoại <span class="req">*</span></label><input id="r-phone" name="phone" type="tel" autocomplete="tel" pattern="[0-9+() .\-]{8,}" required><p class="field__error"></p></div>
+            <div class="field"><label for="r-phone">Số điện thoại <span class="req">*</span></label><input id="r-phone" name="phone" type="tel" autocomplete="tel" required><p class="field__error"></p></div>
             <div class="field field--full"><label for="r-type">Loại công trình</label>
               <select id="r-type" name="project_type">
                 <option value="">Chọn loại công trình</option>
                 <option>Căn hộ / nhà ở</option><option>Biệt thự</option><option>Khách sạn / resort</option><option>Văn phòng</option><option>Nhà hàng / café</option>
               </select></div>
             <div class="field field--full"><label for="r-msg">Mô tả dự án</label><textarea id="r-msg" name="message" placeholder="Quy mô, tiến độ, hạng mục nội thất cần hỗ trợ…"></textarea></div>
-            <label class="check field--full"><input type="checkbox" name="consent" required> Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>.</label>
+            <label class="check field--full"><input type="checkbox" name="consent" required><span>Tôi đồng ý với <a href="policies.html#quyen-rieng-tu">chính sách quyền riêng tư</a>. <span class="req">*</span></span></label>
           </div>
           <div class="form-actions"><button class="btn btn--dark" type="submit">Gửi đăng ký</button></div>
           <p class="form-status" role="status" style="margin-top:16px"></p>
